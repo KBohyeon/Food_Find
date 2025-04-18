@@ -1,0 +1,106 @@
+/* 푸터 스타일 */
+.footer {
+    background-color: #343a40;
+    color: #f8f9fa;
+    padding: 50px 0 20px;
+    margin-top: 40px;
+}
+
+.footer-content {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin-bottom: 30px;
+}
+
+.footer-logo h2 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 10px;
+}
+
+.footer-logo p {
+    color: #adb5bd;
+    font-size: 0.9rem;
+}
+
+.footer-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 40px;
+}
+
+.footer-column h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 15px;
+    color: #f8f9fa;
+}
+
+.footer-column ul li {
+    margin-bottom: 8px;
+}
+
+.footer-column ul li a {
+    color: #adb5bd;
+    font-size: 0.9rem;
+    transition: color 0.3s;
+}
+
+.footer-column ul li a:hover {
+    color: var(--primary-color);
+}
+
+.footer-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 20px;
+    border-top: 1px solid #495057;
+}
+
+.footer-bottom p {
+    color: #adb5bd;
+    font-size: 0.9rem;
+}
+
+.social-links {
+    display: flex;
+    gap: 15px;
+}
+
+.social-links a {
+    color: #adb5bd;
+    font-size: 1.2rem;
+    transition: color 0.3s;
+}
+
+.social-links a:hover {
+    color: var(--primary-color);
+}
+
+/* 반응형 푸터 */
+@media (max-width: 768px) {
+    .footer-content {
+        flex-direction: column;
+        gap: 30px;
+    }
+    
+    .footer-links {
+        gap: 20px;
+    }
+    
+    .footer-bottom {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+    }
+}
+
+@media (max-width: 576px) {
+    .footer-links {
+        flex-direction: column;
+        gap: 25px;
+    }
+}

@@ -1,0 +1,136 @@
+/* 식당 카드 스타일 */
+.scroll-container {
+    display: flex;
+    overflow-x: auto;
+    gap: 20px;
+    padding: 10px 0;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    margin-bottom: 20px;
+}
+
+.scroll-container::-webkit-scrollbar {
+    height: 6px;
+}
+
+.scroll-container::-webkit-scrollbar-track {
+    background: var(--border-color);
+    border-radius: 10px;
+}
+
+.scroll-container::-webkit-scrollbar-thumb {
+    background: var(--primary-color);
+    border-radius: 10px;
+}
+
+.restaurant-card {
+    flex: 0 0 auto;
+    width: 300px;
+    background-color: var(--card-background);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    transition: transform 0.3s, box-shadow 0.3s;
+    scroll-snap-align: start;
+}
+
+.restaurant-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+}
+
+.card-image {
+    position: relative;
+    height: 180px;
+    overflow: hidden;
+}
+
+.card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s;
+}
+
+.restaurant-card:hover .card-image img {
+    transform: scale(1.05);
+}
+
+.category-tag {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background-color: var(--primary-color);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.info {
+    padding: 15px;
+}
+
+.info h2 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--text-color);
+}
+
+.rating {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.stars {
+    color: var(--accent-color);
+    font-weight: 600;
+}
+
+.review-count {
+    color: var(--light-text);
+    font-size: 0.9rem;
+    margin-left: 5px;
+}
+
+.location {
+    color: var(--light-text);
+    font-size: 0.9rem;
+    margin-bottom: 10px;
+}
+
+.location i {
+    margin-right: 5px;
+}
+
+.tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+}
+
+.tag {
+    background-color: rgba(255, 107, 107, 0.1);
+    color: var(--primary-color);
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+}
+
+/* 반응형 카드 */
+@media (max-width: 576px) {
+    .restaurant-card {
+        width: 260px;
+    }
+    
+    .card-image {
+        height: 160px;
+    }
+    
+    .info h2 {
+        font-size: 1.1rem;
+    }
+}

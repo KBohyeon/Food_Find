@@ -1,0 +1,8 @@
+<!--//업로드된 식당 눌렀을때 디테일 정보 html-->
+<h1 th:text="${upload.subject}"></h1>
+<div th:text="${upload.content}"></div>
+
+<form th:action="@{|/comments/create/${upload.id}|}" method="post">
+    <textarea name="content" id="content" rows="15"></textarea>
+    <input type="submit" value="댓글등록">
+</form>

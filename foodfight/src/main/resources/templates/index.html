@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>맛집 추천 | 푸드파인더</title>
+	<link rel="stylesheet" th:href="@{/main.css}">
+	<link rel="stylesheet" th:href="@{/header.css}">
+	<link rel="stylesheet" th:href="@{/restaurant-card.css}">
+	<link rel="stylesheet" th:href="@{/footer.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <!-- 헤더 섹션 -->
+    <header class="header">
+        <div class="header-container">
+            <div class="logo">
+                <h1>푸드파인더</h1>
+            </div>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="#" class="active">홈</a></li>
+                    <li><a href="#">인기 맛집</a></li>
+                    <li><a href="#">신규 등록</a></li>
+                    <li><a href="#">이벤트</a></li>
+                </ul>
+            </nav>
+            <div class="user-actions">
+                <button class="login-btn" sec:authorize="isAnonymous()" th:onclick="|location.href='@{/user/login}'|">로그인</button>
+				<button class="login-btn" sec:authorize="isAuthenticated()" th:onclick="|location.href='@{/user/logout}'|">로그아웃</button>
+                <button class="signup-btn" th:onclick="|location.href='@{/user/signup}'|">회원가입</button>
+            </div>
+            <button class="mobile-menu-btn">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- 메인 콘텐츠 -->
+    <main>
+        <!-- 검색 섹션 -->
+        <section class="search-section">
+            <div class="container">
+                <h2 class="section-title">오늘은 어떤 맛집을 찾으시나요?</h2>
+                <div class="search-container">
+                    <input type="text" placeholder="지역, 음식, 가게 이름으로 검색" class="search-input">
+                    <button class="search-btn">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 카테고리 필터 섹션 -->
+        <section class="category-section">
+            <div class="container">
+                <h3 class="section-subtitle">카테고리</h3>
+                <div class="category-container">
+                    <button class="category-btn active">전체</button>
+                    <button class="category-btn">한식</button>
+                    <button class="category-btn">중식</button>
+                    <button class="category-btn">일식</button>
+                    <button class="category-btn">양식</button>
+                    <button class="category-btn">카페</button>
+                    <button class="category-btn">디저트</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 추천 맛집 섹션 -->
+        <section class="recommended-section">
+            <div class="container">
+                <div class="section-header">
+                    <h3 class="section-subtitle">추천 맛집</h3>
+                    <a href="#" class="view-all">전체보기 <i class="fas fa-chevron-right"></i></a>
+                </div>
+                <div class="scroll-container">
+                    <div class="restaurant-card" th:each="upload : ${uploadList}"> <!-- uploadList만큼 생성 -->
+                        <div class="card-image">
+                            <img src="https://source.unsplash.com/350x220/?korean,food" alt="한식당">
+                            <span class="category-tag">한식</span>
+                        </div>
+                        <div class="info">
+                            <a th:href="@{|/upload/detail/${upload.id}|}" th:text="${upload.subject}">식당 이름</a>
+                            <div class="rating">
+                                <span class="stars">⭐ 4.5</span>
+                                <span class="review-count">(120)</span>
+                            </div>
+                            <p class="location"><i class="fas fa-map-marker-alt"></i> 서울 강남구</p>
+                            <div class="tags">
+                                <span class="tag">#태그1</span>
+                                <span class="tag">#태그2</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 인기 맛집 섹션 -->
+		<section class="popular-section">
+		    <div class="container">
+		        <div class="section-header">
+		            <h3 class="section-subtitle">인기 맛집</h3>
+		            <a href="#" class="view-all">전체보기 <i class="fas fa-chevron-right"></i></a>
+		        </div>
+		        <div class="restaurant-grid">
+		            <!-- 데이터베이스에서 가져온 업로드 목록으로 동적 생성 (인기순으로 정렬된 데이터 사용) -->
+		            <div class="restaurant-card" th:each="upload, iterStat : ${uploadList}" th:if="${iterStat.index < 4}">
+		                <div class="card-image">
+		                    <img src="https://source.unsplash.com/350x220/?food" alt="식당 이미지">
+		                    <span class="category-tag" th:text="${upload.category != null ? upload.category : '기타'}">카테고리</span>
+		                </div>
+		                <div class="info">
+		                    <!-- upload.subject를 식당 이름으로 사용 -->
+		                    <h2 th:text="${upload.subject}">식당 이름</h2>
+		                    <div class="rating">
+		                        <span class="stars">⭐ 4.5</span>
+		                        <span class="review-count">(120)</span>
+		                    </div>
+		                    <p class="location"><i class="fas fa-map-marker-alt"></i> 
+		                        <span th:text="${upload.location != null ? upload.location : '위치 정보 없음'}">위치 정보</span>
+		                    </p>
+		                    <div class="tags">
+		                        <span class="tag">#태그1</span>
+		                        <span class="tag">#태그2</span>
+		                    </div>
+		                </div>
+		            </div>
+		            
+		            <!-- 데이터가 없을 경우 표시할 기본 카드 -->
+		            <div class="restaurant-card" th:if="${uploadList == null || uploadList.isEmpty()}">
+		                <div class="card-image">
+		                    <img src="https://source.unsplash.com/350x220/?restaurant" alt="기본 이미지">
+		                    <span class="category-tag">기본</span>
+		                </div>
+		                <div class="info">
+		                    <h2>등록된 맛집이 없습니다</h2>
+		                    <div class="rating">
+		                        <span class="stars">⭐ 0.0</span>
+		                        <span class="review-count">(0)</span>
+		                    </div>
+		                    <p class="location"><i class="fas fa-map-marker-alt"></i> 위치 정보 없음</p>
+		                    <div class="tags">
+		                        <span class="tag">#맛집등록</span>
+		                    </div>
+		                </div>
+		            </div>
+		        </div>
+		    </div>
+		</section>
+    </main>
+
+    <!-- 푸터 섹션 -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <h2>푸드파인더</h2>
+                    <p>맛있는 발견의 시작</p>
+                </div>
+                <div class="footer-links">
+                    <div class="footer-column">
+                        <h3>서비스 안내</h3>
+                        <ul>
+                            <li><a href="#">서비스 소개</a></li>
+                            <li><a href="#">이용약관</a></li>
+                            <li><a href="#">개인정보처리방침</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h3>고객지원</h3>
+                        <ul>
+                            <li><a href="#">자주 묻는 질문</a></li>
+                            <li><a href="#">문의하기</a></li>
+                            <li><a href="#">피드백</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h3>비즈니스</h3>
+                        <ul>
+                            <li><a href="#">식당 등록하기</a></li>
+                            <li><a href="#">광고 문의</a></li>
+                            <li><a href="#">제휴 문의</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2023 푸드파인더. All rights reserved.</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+</body>
+</html>

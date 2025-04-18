@@ -1,0 +1,65 @@
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: Arial, sans-serif;
+    }
+
+    body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: #f8f9fa;
+        overflow: hidden; /* 세로 스크롤 방지 */
+    }
+
+    .scroll-container {
+        width: 90%;
+        max-width: 400px;
+        overflow-x: auto;
+        display: flex;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+        gap: 15px;
+        padding: 10px;
+        white-space: nowrap;
+    }
+
+    .restaurant-card {
+        flex: 0 0 auto; /* 고정된 크기로 설정 */
+        width: 100%;
+        max-width: 350px;
+        background: white;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        scroll-snap-align: center;
+    }
+
+    .restaurant-card img {
+        width: 100%;
+        height: 220px;
+        object-fit: cover;
+    }
+
+    .info {
+        padding: 15px;
+    }
+
+    .info h2 {
+        font-size: 20px;
+        margin-bottom: 5px;
+    }
+
+    .info p {
+        font-size: 16px;
+        color: #ff9800;
+        font-weight: bold;
+    }
+
+    /* 스크롤바 숨기기 */
+    .scroll-container::-webkit-scrollbar {
+        display: none;
+    }
