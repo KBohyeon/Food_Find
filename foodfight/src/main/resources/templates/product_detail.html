@@ -244,23 +244,20 @@
                                     <div class="reviewer-name">
 										<span th:if="${comments.author != null}" th:text="${comments.author.username}"></span>님
 									</div>
-                                    <div class="review-date">2023.05.15</div>
+                                    <div class="review-date" >2023.05.15</div>
                                 </div>
                             </div>
                             <div class="review-rating">
                                 <span class="stars">⭐</span>
-                                <span class="rating-value">4.5</span>
+                                <span class="rating-value" th:text="${comments.rating}">4.5</span>
                             </div>
                         </div>
                         <div class="review-content">
                             <p th:text="${comments.content}">댓글 나오는 곳</p>
                         </div>
-                        <div class="review-images" th:if="${comment_image != null}">
-                            <div class="review-image" th:each="img : ${comment_image}">
+                        <div class="review-images" th:if="${commentImagesMap[comments.id] != null}">
+                            <div class="review-image" th:each="img : ${commentImagesMap[comments.id]}">
 								<img th:src="@{'/uploads' + ${img.url}}" alt="리뷰 이미지">
-                            </div>
-                            <div class="review-image">
-                                <img src="/comments/48a28885-2731-49a4-818b-3de53deb6055.jpg" alt="리뷰 이미지">
                             </div>
                         </div>
                         <div class="review-actions">
@@ -408,13 +405,13 @@
     <script th:src="@{/detail.js}"></script>
     <!-- 카카오맵 API (예시) -->
     <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=YOUR_APP_KEY"></script>
-	<script>
+<!--	<script>
 		function voteUpload(button) {
 		    const uri = button.dataset.url;  
-		    if (confirm("정말로 추천하시겠습니까?")) {
+		    if (confirm("정말로 추천하시겠습니까?111111111111")) {
 		        location.href = uri;
 		    }
 		}
-	</script>
+	</script>-->
 </body>
 </html>

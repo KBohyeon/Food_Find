@@ -22,6 +22,7 @@ import com.example.foodfight.user.SiteUser;
 import lombok.Getter;
 import lombok.Setter;
 
+
 @Getter
 @Setter
 @Entity

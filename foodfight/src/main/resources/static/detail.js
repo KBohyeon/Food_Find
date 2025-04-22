@@ -34,42 +34,42 @@ document.addEventListener('DOMContentLoaded', function() {
             });
     }
     
-    function addReviewToList(comment) {
-        const reviewItem = document.createElement('div');
-        reviewItem.className = 'review-item';
-        reviewItem.innerHTML = `
-            <div class="review-header">
-                <div class="reviewer-info">
-                    <div class="reviewer-avatar">
-                        <img src="https://source.unsplash.com/50x50/?person" alt="리뷰어 이미지">
-                    </div>
-                    <div class="reviewer-details">
-                        <div class="reviewer-name">${comment.author ? comment.author.username : '익명'}님</div>
-                        <div class="review-date">${formatDate(comment.createDate)}</div>
-                    </div>
-                </div>
-                <div class="review-rating">
-                    <span class="stars">⭐</span>
-                    <span class="rating-value">${comment.rating || '0.0'}</span>
-                </div>
-            </div>
-            <div class="review-content">
-                <p>${comment.content}</p>
-            </div>
-            <div class="review-images">
-                ${comment.images ? renderImages(comment.images) : ''}
-            </div>
-            <div class="review-actions">
-                <button type="button" class="like-btn" data-url="/comments/vote/${comment.id}"
-                    onclick="voteUpload(this)">
-                    <i class="far fa-thumbs-up"></i> 도움됨  
-                    <span class="badge rounded-pill bg-success">${comment.voter ? comment.voter.length : 0}</span>
-                </button>
-                <button class="report-btn"><i class="far fa-flag"></i> 신고</button>
-            </div>
-        `;
-        reviewList.appendChild(reviewItem);
-    }
+	function addReviewToList(comment) {
+	    const reviewItem = document.createElement('div');
+	    reviewItem.className = 'review-item';
+	    reviewItem.innerHTML = `
+	        <div class="review-header">
+	            <div class="reviewer-info">
+	                <div class="reviewer-avatar">
+	                    <img src="https://source.unsplash.com/50x50/?person" alt="리뷰어 이미지">
+	                </div>
+	                <div class="reviewer-details">
+	                    <div class="reviewer-name">${comment.author ? comment.author.username : '익명'}님</div>
+	                    <div class="review-date">${formatDate(comment.createDate)}</div>
+	                </div>
+	            </div>
+	            <div class="review-rating">
+	                <span class="stars">⭐</span>
+	                <span class="rating-value">${comment.rating || '0.0'}</span>
+	            </div>
+	        </div>
+	        <div class="review-content">
+	            <p>${comment.content}</p>
+	        </div>
+	        <div class="review-images">
+	            ${comment.images ? renderImages(comment.images) : ''}
+	        </div>
+	        <div class="review-actions">
+	            <button type="button" class="like-btn" data-url="/comments/vote/${comment.id}"
+	                onclick="voteUpload(this)">
+	                <i class="far fa-thumbs-up"></i> 도움됨  
+	                <span class="badge rounded-pill bg-success">${comment.voter ? comment.voter.length : 0}</span>
+	            </button>
+	            <button class="report-btn"><i class="far fa-flag"></i> 신고</button>
+	        </div>
+	    `;
+	    reviewList.appendChild(reviewItem);
+	}
     
     function formatDate(dateString) {
         if (!dateString) return '';
@@ -77,6 +77,8 @@ document.addEventListener('DOMContentLoaded', function() {
         return date.toLocaleDateString('ko-KR', { year: 'numeric', month: '2-digit', day: '2-digit' });
     }
     
+	
+	//이미지 보여주는데 필요한건지 모르겠음 일단 필요없음
     function renderImages(images) {
         if (!images || images.length === 0) return '';
         
@@ -165,7 +167,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // 이미지 미리보기 기능
+    // 리뷰 쓸때 이미지 미리보기 기능
     const reviewImages = document.getElementById('reviewImages');
     const imagePreview = document.getElementById('imagePreview');
     
@@ -354,7 +356,7 @@ document.addEventListener('DOMContentLoaded', function() {
 // 리뷰 추천 함수 (전역 함수로 정의)
 function voteUpload(button) {
     const uri = button.dataset.url;  
-    if (confirm("정말로 추천하시겠습니까?")) {
+    if (confirm("정말로 추천하시겠습니까?22222222222")) {
         fetch(uri, {
             method: 'POST',
             headers: {

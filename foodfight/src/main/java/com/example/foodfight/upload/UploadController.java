@@ -1,6 +1,9 @@
 package com.example.foodfight.upload;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -41,9 +44,18 @@ public class UploadController {
     @GetMapping(value = "/detail/{id}")
     public String detail(Model model, @PathVariable("id") Integer id, CommentsForm commentsForm) {
         Upload upload = this.uploadService.getUpload(id);
-        List<Comments> commentImages = this.commentsService.getCommentsByUpload(upload);
+        List<Comments> commentsList = this.commentsService.getCommentsByUpload(upload);
+        
+        // 각 댓글에 연결된 이미지 가져오기
+        Map<Integer, List<CommentImage>> commentImagesMap = new HashMap<>();
+        for (Comments comment : commentsList) {
+            List<CommentImage> images = this.commentsService.getCommentImagesByComment(comment);
+            commentImagesMap.put(comment.getId(), images);
+        }
+        
         model.addAttribute("upload", upload);
-//        model.addAttribute("comment_image", commentImages);
+        model.addAttribute("comment_image", commentsList);
+        model.addAttribute("commentImagesMap", commentImagesMap); // 이미지 맵 추가
 //        return "upload_detail";  //html
         return "product_detail";
     }

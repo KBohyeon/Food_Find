@@ -36,7 +36,10 @@ public class FileService {
             Files.write(filePath, file.getBytes());
             
             // 파일 URL 반환 (상대 경로)
+            System.out.println("파일이 저장될 경로: " + directory);
+            System.out.println("저장할 파일 경로: " + filePath.toString());
             return "/" + subDir + "/" + newFilename;
+            
         } catch (IOException e) {
             throw new RuntimeException("파일 저장 중 오류가 발생했습니다: " + e.getMessage());
         }

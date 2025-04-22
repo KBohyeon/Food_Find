@@ -153,10 +153,10 @@ public class CommentsService {
 			}
 		}
 		
-		// 리뷰 수 업데이트
+		// 리뷰 수 DB 업데이트
 		upload.setReviewCount(allComments.size());
 		
-		// 업로드 저장
+		// 업로드 DB 저장
 		uploadService.save(upload);
 	}
 	
@@ -176,5 +176,10 @@ public class CommentsService {
 	
 	public Comments getComments(Integer id) {
 	    return getComments(id.longValue());
+	}
+	
+	//이미지
+	public List<CommentImage> getCommentImagesByComment(Comments comment) {
+	    return commentImageRepository.findByComment(comment);
 	}
 }
