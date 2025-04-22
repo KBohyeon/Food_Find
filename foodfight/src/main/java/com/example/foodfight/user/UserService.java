@@ -2,6 +2,8 @@ package com.example.foodfight.user;
 import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import lombok.RequiredArgsConstructor;
+import java.util.Optional;
+import com.example.foodfight.DataNotFoundException;
 
 @RequiredArgsConstructor
 @Service
@@ -18,4 +20,15 @@ public class UserService {
 		this.userRepository.save(user);
 		return user;
 	}
+	
+	//siteUer 조회
+	public SiteUser getUser(String username) {
+        Optional<SiteUser> siteUser = this.userRepository.findByusername(username);
+        if (siteUser.isPresent()) {
+            return siteUser.get();
+        } else {
+            throw new DataNotFoundException("siteuser not found");
+        }
+    }
+	
 }

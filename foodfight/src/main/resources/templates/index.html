@@ -83,8 +83,10 @@
                         <div class="info">
                             <a th:href="@{|/upload/detail/${upload.id}|}" th:text="${upload.subject}">식당 이름</a>
                             <div class="rating">
-                                <span class="stars">⭐ 4.5</span>
-                                <span class="review-count">(120)</span>
+								<span class="stars">⭐</span>
+                                <span class="stars" th:text="${upload.rating != null ? upload.rating : '0.0'}">⭐ 4.5</span>
+                                <span class="review-count" th:if="${#lists.size(upload.commentsList) > 0}" 
+								th:text="${#lists.size(upload.commentsList)}">(120)</span>
                             </div>
                             <p class="location"><i class="fas fa-map-marker-alt"></i> 서울 강남구</p>
                             <div class="tags">
@@ -116,7 +118,8 @@
 		                    <h2 th:text="${upload.subject}">식당 이름</h2>
 		                    <div class="rating">
 		                        <span class="stars">⭐ 4.5</span>
-		                        <span class="review-count">(120)</span>
+		                        <span class="review-count" th:if="${#lists.size(upload.commentsList) > 0}" 
+								th:text="${#lists.size(upload.commentsList)}"></span>
 		                    </div>
 		                    <p class="location"><i class="fas fa-map-marker-alt"></i> 
 		                        <span th:text="${upload.location != null ? upload.location : '위치 정보 없음'}">위치 정보</span>

@@ -18,6 +18,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 import com.example.foodfight.upload.Upload;
 import com.example.foodfight.upload.UploadService;
+import com.example.foodfight.user.SiteUser;
+import com.example.foodfight.user.UserService;
+import jakarta.validation.Valid;
 
 
 @RequestMapping("/comments")
@@ -27,13 +30,29 @@ public class CommentsController {
 	
 	private final UploadService uploadService;
 	private final CommentsService commentsService;
+	private final UserService userService;
 	
+	 @PreAuthorize("isAuthenticated()")
 	@PostMapping("/create/{id}")
-	public String createComments(Model model, @PathVariable("id") Integer id, @RequestParam(value="content") String content) {
-		//value="content" upload_detail.html에서 답변으로 입력한 내용(content)을 얻기 위해
+	public String createComments(Model model, @PathVariable("id") Integer id,  @Valid CommentsForm commentsForm, 
+			BindingResult bindingResult, Principal principal) {
 		Upload upload = this.uploadService.getUpload(id);
+		SiteUser siteUser = this.userService.getUser(principal.getName());
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("upload", upload);
+            return "product_detail";
+        }
 		//CommentsService의 create호출
-		this.commentsService.create(upload, content);
+		this.commentsService.create(upload, commentsForm.getContent(), siteUser);
 		return String.format("redirect:/upload/detail/%s", id);
 	}
+	
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/vote/{id}")
+    public String commentsVote(Principal principal, @PathVariable("id") Integer id) {
+        Comments comments = this.commentsService.getComments(id);
+        SiteUser siteUser = this.userService.getUser(principal.getName());
+        this.commentsService.vote(comments, siteUser);
+        return String.format("redirect:/upload/detail/%s", comments.getUpload().getId());
+    }
 }

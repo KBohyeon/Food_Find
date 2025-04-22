@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${upload.subject} + ' | 푸드파인더'">식당 상세 | 푸드파인더</title>
+    <!-- Thymeleaf를 사용한 정적 리소스 참조 -->
+    <link rel="stylesheet" th:href="@{/main.css}">
+    <link rel="stylesheet" th:href="@{/header.css}">
+    <link rel="stylesheet" th:href="@{/footer.css}">
+    <link rel="stylesheet" th:href="@{/detail.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <!-- 헤더 섹션 -->
+    <header class="header">
+        <div class="header-container">
+            <div class="logo">
+                <a th:href="@{/}"><h1>푸드파인더</h1></a>
+            </div>
+            <nav class="main-nav">
+                <ul>
+                    <li><a th:href="@{/}">홈</a></li>
+                    <li><a th:href="@{/popular}">인기 맛집</a></li>
+                    <li><a th:href="@{/new}">신규 등록</a></li>
+                    <li><a th:href="@{/event}">이벤트</a></li>
+                </ul>
+            </nav>
+            <div class="user-actions">
+				<button class="login-btn" sec:authorize="isAnonymous()" th:onclick="|location.href='@{/user/login}'|">로그인</button>
+				<button class="login-btn" sec:authorize="isAuthenticated()" th:onclick="|location.href='@{/user/logout}'|">로그아웃</button>
+				<button class="signup-btn" th:onclick="|location.href='@{/user/signup}'|">회원가입</button>
+            </div>
+            <button class="mobile-menu-btn">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- 메인 콘텐츠 -->
+    <main class="detail-main">
+        <!-- 식당 대표 사진 -->
+        <section class="restaurant-hero">
+            <div class="hero-image">
+                <img th:if="${upload.imagePath != null}" th:src="${upload.imagePath}" alt="식당 대표 이미지">
+                <img th:unless="${upload.imagePath != null}" src="https://source.unsplash.com/1200x400/?restaurant,food" alt="기본 식당 이미지">
+                <div class="back-button">
+                    <a th:href="@{/}"><i class="fas fa-arrow-left"></i> 목록으로</a>
+                </div>
+            </div>
+        </section>
+
+        <div class="detail-container">
+            <!-- 식당 정보 섹션 -->
+            <section class="restaurant-info">
+                <div class="info-header">
+                    <div class="title-tags">
+                        <h1 class="restaurant-title" th:text="${upload.subject}">식당 이름</h1>
+                        <div class="tags">
+                            <span class="tag" th:text="${'#' + upload.category}">카테고리</span>
+                            <span class="tag">#가성비</span>
+                            <span class="tag">#데이트</span>
+                        </div>
+                    </div>
+                    <div class="rating-info">
+                        <div class="rating">
+                            <span class="stars">⭐</span>
+                            <span class="rating-value" th:text="${upload.rating != null ? upload.rating : '0.0'}">4.5</span>
+                        </div>
+                        <div class="review-count">
+                            <span th:if="${#lists.size(upload.commentsList) > 0}" 
+							th:text="${#lists.size(upload.commentsList)}">120</span>개의 리뷰
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 식당 한줄 소개 -->
+                <div class="restaurant-intro">
+                    <p th:text="${upload.content != null ? upload.content : '등록된 소개글이 없습니다.'}">
+                        소개 글
+                    </p>
+                </div>
+
+                <!-- 식당 위치 정보 -->
+                <div class="restaurant-location">
+                    <h3><i class="fas fa-map-marker-alt"></i> 위치 정보</h3>
+                    <p class="address" th:text="${upload.location != null ? upload.location : '위치 정보가 등록되지 않았습니다.'}">
+                        서울특별시 강남구 테헤란로 123 푸드빌딩 1층
+                    </p>
+                    <div class="map-container">
+                        <!-- 지도 API 연동 (카카오맵 또는 구글맵) -->
+                        <div id="map" style="width:100%;height:300px;"></div>
+                    </div>
+                    <div class="location-actions">
+                        <button class="action-btn copy-address"><i class="fas fa-copy"></i> 주소 복사</button>
+                        <button class="action-btn find-way"><i class="fas fa-route"></i> 길찾기</button>
+                    </div>
+                </div>
+
+                <!-- 영업 정보 -->
+                <div class="business-info">
+                    <h3><i class="fas fa-clock"></i> 영업 정보</h3>
+                    <ul class="info-list">
+                        <li>
+                            <span class="info-label">영업시간</span>
+                            <span class="info-value">11:00 - 22:00</span>
+                        </li>
+                        <li>
+                            <span class="info-label">휴무일</span>
+                            <span class="info-value">매주 월요일</span>
+                        </li>
+                        <li>
+                            <span class="info-label">전화번호</span>
+                            <span class="info-value">02-123-4567</span>
+                        </li>
+                        <li>
+                            <span class="info-label">웹사이트</span>
+                            <span class="info-value"><a href="#" target="_blank">www.restaurant.com</a></span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- 메뉴 정보 -->
+                <div class="menu-info">
+                    <h3><i class="fas fa-utensils"></i> 대표 메뉴</h3>
+                    <ul class="menu-list">
+                        <li class="menu-item">
+                            <div class="menu-image">
+                                <img src="https://source.unsplash.com/100x100/?food" alt="메뉴 이미지">
+                            </div>
+                            <div class="menu-details">
+                                <h4 class="menu-name">시그니처 메뉴</h4>
+                                <p class="menu-description">신선한 재료로 만든 특별한 요리</p>
+                                <p class="menu-price">25,000원</p>
+                            </div>
+                        </li>
+                        <li class="menu-item">
+                            <div class="menu-image">
+                                <img src="https://source.unsplash.com/100x100/?dish" alt="메뉴 이미지">
+                            </div>
+                            <div class="menu-details">
+                                <h4 class="menu-name">인기 메뉴</h4>
+                                <p class="menu-description">많은 손님들이 찾는 인기 메뉴</p>
+                                <p class="menu-price">18,000원</p>
+                            </div>
+                        </li>
+                        <li class="menu-item">
+                            <div class="menu-image">
+                                <img src="https://source.unsplash.com/100x100/?meal" alt="메뉴 이미지">
+                            </div>
+                            <div class="menu-details">
+                                <h4 class="menu-name">계절 메뉴</h4>
+                                <p class="menu-description">제철 재료로 만든 특별한 요리</p>
+                                <p class="menu-price">22,000원</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- 리뷰 섹션 -->
+            <section class="review-section">
+                <div class="section-header">
+                    <h2>리뷰</h2>
+                    <button class="write-review-btn">리뷰 작성하기</button>
+                </div>
+
+                <!-- 리뷰 요약 -->
+                <div class="review-summary">
+                    <div class="summary-rating">
+                        <div class="big-rating">
+                            <span th:text="${upload.rating != null ? upload.rating : '0.0'}">4.5</span>
+                        </div>
+                        <div class="rating-stars">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star-half-alt"></i>
+                        </div>
+                        <div class="total-reviews">
+                            <span th:if="${#lists.size(upload.commentsList) > 0}" 
+								th:text="${#lists.size(upload.commentsList)}">120</span>개의 리뷰
+                        </div>
+                    </div>
+                    <div class="rating-bars">
+                        <div class="rating-bar-item">
+                            <span class="bar-label">5점</span>
+                            <div class="bar-container">
+                                <div class="bar" style="width: 70%;"></div>
+                            </div>
+                            <span class="bar-percent">70%</span>
+                        </div>
+                        <div class="rating-bar-item">
+                            <span class="bar-label">4점</span>
+                            <div class="bar-container">
+                                <div class="bar" style="width: 20%;"></div>
+                            </div>
+                            <span class="bar-percent">20%</span>
+                        </div>
+                        <div class="rating-bar-item">
+                            <span class="bar-label">3점</span>
+                            <div class="bar-container">
+                                <div class="bar" style="width: 5%;"></div>
+                            </div>
+                            <span class="bar-percent">5%</span>
+                        </div>
+                        <div class="rating-bar-item">
+                            <span class="bar-label">2점</span>
+                            <div class="bar-container">
+                                <div class="bar" style="width: 3%;"></div>
+                            </div>
+                            <span class="bar-percent">3%</span>
+                        </div>
+                        <div class="rating-bar-item">
+                            <span class="bar-label">1점</span>
+                            <div class="bar-container">
+                                <div class="bar" style="width: 2%;"></div>
+                            </div>
+                            <span class="bar-percent">2%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 리뷰 필터 -->
+                <div class="review-filter">
+                    <button class="filter-btn active">최신순</button>
+                    <button class="filter-btn">평점 높은순</button>
+                    <button class="filter-btn">평점 낮은순</button>
+                </div>
+
+                <!-- 리뷰 목록 -->
+                <div class="review-list" id="reviewList">
+                    <!-- 리뷰 아이템 (7개 표시) -->
+                    <div class="review-item" th:each="comments : ${upload.commentsList}">
+                        <div class="review-header">
+                            <div class="reviewer-info">
+                                <div class="reviewer-avatar">
+                                    <img src="https://source.unsplash.com/50x50/?person" alt="리뷰어 이미지">
+                                </div>
+                                <div class="reviewer-details">
+                                    <div class="reviewer-name">
+										<span th:if="${comments.author != null}" th:text="${comments.author.username}"></span>님
+									</div>
+                                    <div class="review-date">2023.05.15</div>
+                                </div>
+                            </div>
+                            <div class="review-rating">
+                                <span class="stars">⭐</span>
+                                <span class="rating-value">4.5</span>
+                            </div>
+                        </div>
+                        <div class="review-content">
+                            <p th:text="${comments.content}">댓글 나오는 곳</p>
+                        </div>
+                        <div class="review-images">
+                            <div class="review-image">
+                                <img src="https://source.unsplash.com/150x150/?food" alt="리뷰 이미지">
+                            </div>
+                            <div class="review-image">
+                                <img src="https://source.unsplash.com/150x150/?restaurant" alt="리뷰 이미지">
+                            </div>
+                        </div>
+                        <div class="review-actions">
+                            <button type="button" class="like-btn" th:data-url="@{|/comments/vote/${comments.id}|}"
+							onclick="voteUpload(this)">
+								<i class="far fa-thumbs-up"></i> 도움됨  
+								<span class="badge rounded-pill bg-success"
+							      th:text="${#lists.size(comments.voter)}"></span>
+							  </button>
+                            <button class="report-btn"><i class="far fa-flag"></i> 신고</button>
+                        </div>
+                    </div>
+
+                    <!-- 리뷰가 없을 경우 -->
+                    <div class="no-reviews" th:if="${reviews == null || reviews.isEmpty()}">
+                        <i class="far fa-comment-dots"></i>
+                        <p>아직 등록된 리뷰가 없습니다.</p>
+                        <p>첫 리뷰를 작성해보세요!</p>
+                    </div>
+                </div>
+
+                <!-- 더보기 버튼 -->
+                <div class="load-more-container" th:if="${reviews != null && reviews.size() > 7}">
+                    <button id="loadMoreBtn" class="load-more-btn">더보기 <i class="fas fa-chevron-down"></i></button>
+                </div>
+            </section>
+
+            <!-- 비슷한 맛집 추천 -->
+            <section class="similar-restaurants">
+                <h2>비슷한 맛집</h2>
+                <div class="scroll-container">
+                    <div class="restaurant-card" th:each="i : ${#numbers.sequence(1, 4)}">
+                        <div class="card-image">
+                            <img src="https://source.unsplash.com/350x220/?restaurant" alt="식당 이미지">
+                            <span class="category-tag">카테고리</span>
+                        </div>
+                        <div class="info">
+                            <h2>추천 맛집 이름</h2>
+                            <div class="rating">
+                                <span class="stars">⭐ 4.3</span>
+                                <span class="review-count">(85)</span>
+                            </div>
+                            <p class="location"><i class="fas fa-map-marker-alt"></i> 위치 정보</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- 푸터 섹션 -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <h2>푸드파인더</h2>
+                    <p>맛있는 발견의 시작</p>
+                </div>
+                <div class="footer-links">
+                    <div class="footer-column">
+                        <h3>서비스 안내</h3>
+                        <ul>
+                            <li><a href="#">서비스 소개</a></li>
+                            <li><a href="#">이용약관</a></li>
+                            <li><a href="#">개인정보처리방침</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h3>고객지원</h3>
+                        <ul>
+                            <li><a href="#">자주 묻는 질문</a></li>
+                            <li><a href="#">문의하기</a></li>
+                            <li><a href="#">피드백</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h3>비즈니스</h3>
+                        <ul>
+                            <li><a href="#">식당 등록하기</a></li>
+                            <li><a href="#">광고 문의</a></li>
+                            <li><a href="#">제휴 문의</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2023 푸드파인더. All rights reserved.</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+	<!-- 리뷰 작성 모달 -->
+	<div class="modal" id="reviewModal">
+	    <div class="modal-content">
+	        <div class="modal-header">
+	            <h3>리뷰 작성하기</h3>
+	            <button class="close-modal">&times;</button>
+	        </div>
+	        <div class="modal-body">
+	            <form id="reviewForm">
+	                <!-- 숨겨진 uploadId 필드 추가 -->
+	                <input type="hidden" id="uploadId" th:value="${upload.id}">
+	                
+	                <div class="form-group">
+	                    <label>평점</label>
+	                    <div class="rating-input">
+	                        <i class="far fa-star" data-rating="1"></i>
+	                        <i class="far fa-star" data-rating="2"></i>
+	                        <i class="far fa-star" data-rating="3"></i>
+	                        <i class="far fa-star" data-rating="4"></i>
+	                        <i class="far fa-star" data-rating="5"></i>
+	                        <input type="hidden" name="rating" id="ratingInput" value="0">
+	                    </div>
+	                </div>
+	                <div class="form-group">
+	                    <label for="reviewContent">리뷰 내용</label>
+	                    <textarea id="reviewContent" name="content" rows="5" placeholder="맛, 서비스, 분위기 등 식당에 대한 솔직한 리뷰를 남겨주세요."></textarea>
+	                </div>
+	                <div class="form-group">
+	                    <label>사진 첨부</label>
+	                    <div class="file-upload">
+	                        <input type="file" id="reviewImages" name="images" multiple accept="image/*">
+	                        <label for="reviewImages" class="upload-btn"><i class="fas fa-camera"></i> 사진 선택</label>
+	                        <div class="preview-container" id="imagePreview"></div>
+	                    </div>
+	                </div>
+	                <div class="form-actions">
+	                    <button type="button" class="cancel-btn">취소</button>
+	                    <button type="submit" class="submit-btn">등록하기</button>
+	                </div>
+	            </form>
+	        </div>
+	    </div>
+	</div>
+    </div>
+
+    <!-- JavaScript -->
+    <script th:src="@{/main.js}"></script>
+    <script th:src="@{/detail.js}"></script>
+    <!-- 카카오맵 API (예시) -->
+    <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=YOUR_APP_KEY"></script>
+	<script>
+		function voteUpload(button) {
+		    const uri = button.dataset.url;  
+		    if (confirm("정말로 추천하시겠습니까?")) {
+		        location.href = uri;
+		    }
+		}
+	</script>
+</body>
+</html>

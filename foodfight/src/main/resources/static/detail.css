@@ -1,0 +1,867 @@
+/* 상세 페이지 스타일 */
+.detail-main {
+    padding-top: 0;
+    background-color: var(--background-color);
+}
+
+.detail-container {
+    width: 90%;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 15px;
+}
+
+/* 식당 대표 사진 */
+.restaurant-hero {
+    width: 100%;
+    margin-bottom: 30px;
+    position: relative;
+}
+
+.hero-image {
+    width: 100%;
+    height: 400px;
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.back-button {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    z-index: 10;
+}
+
+.back-button a {
+    display: flex;
+    align-items: center;
+    background-color: rgba(255, 255, 255, 0.8);
+    color: var(--text-color);
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-weight: 500;
+    transition: all 0.3s;
+}
+
+.back-button a i {
+    margin-right: 5px;
+}
+
+.back-button a:hover {
+    background-color: white;
+    color: var(--primary-color);
+}
+
+/* 식당 정보 섹션 */
+.restaurant-info {
+    background-color: white;
+    border-radius: var(--border-radius);
+    padding: 30px;
+    margin-bottom: 30px;
+    box-shadow: var(--shadow);
+}
+
+.info-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.restaurant-title {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+    color: var(--text-color);
+}
+
+.tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 15px;
+}
+
+.tag {
+    background-color: rgba(255, 107, 107, 0.1);
+    color: var(--primary-color);
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 0.9rem;
+}
+
+.rating-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.rating {
+    display: flex;
+    align-items: center;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--accent-color);
+    margin-bottom: 5px;
+}
+
+.rating .stars {
+    margin-right: 5px;
+}
+
+.review-count {
+    color: var(--light-text);
+    font-size: 0.9rem;
+}
+
+/* 식당 한줄 소개 */
+.restaurant-intro {
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.restaurant-intro p {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: var(--text-color);
+}
+
+/* 식당 위치 정보 */
+.restaurant-location {
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.restaurant-location h3 {
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+}
+
+.restaurant-location h3 i {
+    margin-right: 10px;
+    color: var(--primary-color);
+}
+
+.address {
+    font-size: 1.1rem;
+    margin-bottom: 15px;
+}
+
+.map-container {
+    width: 100%;
+    height: 300px;
+    background-color: #eee;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.location-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.action-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 15px;
+    border-radius: 4px;
+    font-weight: 500;
+    transition: all 0.3s;
+    background-color: var(--background-color);
+    color: var(--text-color);
+}
+
+.action-btn i {
+    margin-right: 5px;
+}
+
+.action-btn:hover {
+    background-color: var(--border-color);
+}
+
+/* 영업 정보 */
+.business-info {
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.business-info h3 {
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+}
+
+.business-info h3 i {
+    margin-right: 10px;
+    color: var(--primary-color);
+}
+
+.info-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.info-list li {
+    display: flex;
+    align-items: center;
+}
+
+.info-label {
+    width: 100px;
+    font-weight: 500;
+    color: var(--light-text);
+}
+
+.info-value {
+    flex: 1;
+}
+
+.info-value a {
+    color: var(--primary-color);
+    text-decoration: underline;
+}
+
+/* 메뉴 정보 */
+.menu-info {
+    margin-bottom: 30px;
+}
+
+.menu-info h3 {
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+}
+
+.menu-info h3 i {
+    margin-right: 10px;
+    color: var(--primary-color);
+}
+
+.menu-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.menu-item {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border-radius: 8px;
+    background-color: var(--background-color);
+    transition: transform 0.3s;
+}
+
+.menu-item:hover {
+    transform: translateY(-3px);
+}
+
+.menu-image {
+    width: 80px;
+    height: 80px;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-right: 15px;
+}
+
+.menu-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.menu-details {
+    flex: 1;
+}
+
+.menu-name {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+.menu-description {
+    font-size: 0.9rem;
+    color: var(--light-text);
+    margin-bottom: 5px;
+}
+
+.menu-price {
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+/* 리뷰 섹션 */
+.review-section {
+    background-color: white;
+    border-radius: var(--border-radius);
+    padding: 30px;
+    margin-bottom: 30px;
+    box-shadow: var(--shadow);
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.section-header h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.write-review-btn {
+    padding: 8px 15px;
+    background-color: var(--primary-color);
+    color: white;
+    border-radius: 4px;
+    font-weight: 500;
+    transition: background-color 0.3s;
+}
+
+.write-review-btn:hover {
+    background-color: var(--secondary-color);
+}
+
+/* 리뷰 요약 */
+.review-summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background-color: var(--background-color);
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.summary-rating {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.big-rating {
+    font-size: 3rem;
+    font-weight: 700;
+    color: var(--text-color);
+    line-height: 1;
+    margin-bottom: 5px;
+}
+
+.rating-stars {
+    color: var(--accent-color);
+    font-size: 1.2rem;
+    margin-bottom: 5px;
+}
+
+.total-reviews {
+    font-size: 0.9rem;
+    color: var(--light-text);
+}
+
+.rating-bars {
+    flex: 1;
+    max-width: 400px;
+    margin-left: 30px;
+}
+
+.rating-bar-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.bar-label {
+    width: 40px;
+    font-size: 0.9rem;
+    text-align: right;
+    margin-right: 10px;
+}
+
+.bar-container {
+    flex: 1;
+    height: 8px;
+    background-color: #e9ecef;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.bar {
+    height: 100%;
+    background-color: var(--primary-color);
+}
+
+.bar-percent {
+    width: 40px;
+    font-size: 0.9rem;
+    margin-left: 10px;
+}
+
+/* 리뷰 필터 */
+.review-filter {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.filter-btn {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    background-color: var(--background-color);
+    transition: all 0.3s;
+}
+
+.filter-btn:hover {
+    background-color: var(--border-color);
+}
+
+.filter-btn.active {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+/* 리뷰 목록 */
+.review-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.review-item {
+    padding: 20px;
+    border-radius: 8px;
+    background-color: var(--background-color);
+    transition: transform 0.3s;
+}
+
+.review-item:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.review-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.reviewer-info {
+    display: flex;
+    align-items: center;
+}
+
+.reviewer-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin-right: 10px;
+}
+
+.reviewer-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.reviewer-name {
+    font-weight: 500;
+    margin-bottom: 3px;
+}
+
+.review-date {
+    font-size: 0.8rem;
+    color: var(--light-text);
+}
+
+.review-rating {
+    display: flex;
+    align-items: center;
+    color: var(--accent-color);
+    font-weight: 600;
+}
+
+.review-content {
+    margin-bottom: 15px;
+    line-height: 1.6;
+}
+
+.review-images {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+    overflow-x: auto;
+    padding-bottom: 5px;
+}
+
+.review-image {
+    width: 120px;
+    height: 120px;
+    border-radius: 8px;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.review-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.review-actions {
+    display: flex;
+    gap: 15px;
+}
+
+.like-btn, .report-btn {
+    display: flex;
+    align-items: center;
+    font-size: 0.9rem;
+    color: var(--light-text);
+    transition: color 0.3s;
+}
+
+.like-btn i, .report-btn i {
+    margin-right: 5px;
+}
+
+.like-btn:hover {
+    color: var(--primary-color);
+}
+
+.report-btn:hover {
+    color: #dc3545;
+}
+
+.no-reviews {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 0;
+    color: var(--light-text);
+}
+
+.no-reviews i {
+    font-size: 3rem;
+    margin-bottom: 15px;
+}
+
+.no-reviews p {
+    font-size: 1.1rem;
+    margin-bottom: 5px;
+}
+
+/* 더보기 버튼 */
+.load-more-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.load-more-btn {
+    padding: 10px 20px;
+    background-color: var(--background-color);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    transition: all 0.3s;
+}
+
+.load-more-btn i {
+    margin-left: 5px;
+}
+
+.load-more-btn:hover {
+    background-color: var(--border-color);
+}
+
+/* 비슷한 맛집 추천 */
+.similar-restaurants {
+    margin-bottom: 40px;
+}
+
+.similar-restaurants h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+/* 모달 스타일 */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal.active {
+    display: flex;
+}
+
+.modal-content {
+    background-color: white;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 600px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.modal-header h3 {
+    font-size: 1.3rem;
+    font-weight: 600;
+}
+
+.close-modal {
+    font-size: 1.5rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--light-text);
+    transition: color 0.3s;
+}
+
+.close-modal:hover {
+    color: var(--text-color);
+}
+
+.modal-body {
+    padding: 20px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+.rating-input {
+    display: flex;
+    gap: 5px;
+    font-size: 1.5rem;
+    color: var(--light-text);
+}
+
+.rating-input i {
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.rating-input i.fas {
+    color: var(--accent-color);
+}
+
+.rating-input i:hover {
+    color: var(--accent-color);
+}
+
+textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    resize: vertical;
+    font-family: inherit;
+    font-size: 1rem;
+}
+
+.file-upload {
+    position: relative;
+}
+
+.file-upload input[type="file"] {
+    position: absolute;
+    width: 0;
+    height: 0;
+    opacity: 0;
+}
+
+.upload-btn {
+    display: inline-flex;
+    align-items: center;
+    padding: 8px 15px;
+    background-color: var(--background-color);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.upload-btn:hover {
+    background-color: var(--border-color);
+}
+
+.upload-btn i {
+    margin-right: 5px;
+}
+
+.preview-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.image-preview {
+    width: 80px;
+    height: 80px;
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+}
+
+.image-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.remove-image {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    width: 20px;
+    height: 20px;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.8rem;
+    cursor: pointer;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.cancel-btn {
+    padding: 8px 15px;
+    background-color: var(--background-color);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    transition: background-color 0.3s;
+}
+
+.cancel-btn:hover {
+    background-color: var(--border-color);
+}
+
+.submit-btn {
+    padding: 8px 15px;
+    background-color: var(--primary-color);
+    color: white;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+}
+
+.submit-btn:hover {
+    background-color: var(--secondary-color);
+}
+
+/* 반응형 스타일 */
+@media (max-width: 768px) {
+    .info-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .rating-info {
+        align-items: flex-start;
+        margin-top: 10px;
+    }
+    
+    .review-summary {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .rating-bars {
+        width: 100%;
+        max-width: none;
+        margin-left: 0;
+        margin-top: 20px;
+    }
+    
+    .hero-image {
+        height: 250px;
+    }
+}
+
+@media (max-width: 576px) {
+    .restaurant-title {
+        font-size: 1.5rem;
+    }
+    
+    .restaurant-info, .review-section {
+        padding: 20px;
+    }
+    
+    .review-actions {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .menu-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .menu-image {
+        width: 100%;
+        height: 150px;
+        margin-right: 0;
+        margin-bottom: 10px;
+    }
+}
+

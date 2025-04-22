@@ -17,6 +17,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.example.foodfight.comments.CommentsForm;
+
 @RequestMapping("/upload")// 프리픽스
 @RequiredArgsConstructor
 @Controller
@@ -33,10 +35,11 @@ public class UploadController {
 	
 	//제목 누르면 나오는 질문 각자의 페이지
     @GetMapping(value = "/detail/{id}")
-    public String detail(Model model, @PathVariable("id") Integer id) {
+    public String detail(Model model, @PathVariable("id") Integer id, CommentsForm commentsForm) {
         Upload upload = this.uploadService.getUpload(id);
         model.addAttribute("upload", upload);
-        return "upload_detail";  //html
+//        return "upload_detail";  //html
+        return "product_detail";
     }
-    
+
 }

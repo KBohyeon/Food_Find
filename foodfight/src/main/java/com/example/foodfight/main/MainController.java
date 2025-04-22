@@ -12,6 +12,12 @@ public class MainController {
     public String index() {
         return "index";
     }
+    
+    @GetMapping("/product_detail")
+    @ResponseBody
+    public String product_detail() {
+        return "product_detail";
+    }
 
     @GetMapping("/")
     public String root() {

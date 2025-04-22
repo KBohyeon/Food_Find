@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.example.foodfight.comments.Comments;
+import com.example.foodfight.user.SiteUser;
 
 import jakarta.persistence.CascadeType; 
 import jakarta.persistence.Column;
@@ -13,9 +14,12 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany; 
-
+import java.util.Set;
+import jakarta.persistence.ManyToMany;
+import com.example.foodfight.user.SiteUser;
 import lombok.Getter;
 import lombok.Setter;
+
 
 @Getter
 @Setter
@@ -46,5 +50,8 @@ public class Upload {
     
     @OneToMany(mappedBy = "upload", cascade = CascadeType.REMOVE) 
     private List<Comments> commentsList; 
+    
+    @ManyToMany
+    Set<SiteUser> voter;
     
 }
