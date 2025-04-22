@@ -2,6 +2,8 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+	<meta name="_csrf" th:content="${_csrf.token}"/>
+	<meta name="_csrf_header" th:content="${_csrf.headerName}"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title th:text="${upload.subject} + ' | 푸드파인더'">식당 상세 | 푸드파인더</title>
     <!-- Thymeleaf를 사용한 정적 리소스 참조 -->
@@ -253,12 +255,12 @@
                         <div class="review-content">
                             <p th:text="${comments.content}">댓글 나오는 곳</p>
                         </div>
-                        <div class="review-images">
-                            <div class="review-image">
-                                <img src="https://source.unsplash.com/150x150/?food" alt="리뷰 이미지">
+                        <div class="review-images" th:if="${comment_image != null}">
+                            <div class="review-image" th:each="img : ${comment_image}">
+								<img th:src="@{'/uploads' + ${img.url}}" alt="리뷰 이미지">
                             </div>
                             <div class="review-image">
-                                <img src="https://source.unsplash.com/150x150/?restaurant" alt="리뷰 이미지">
+                                <img src="/comments/48a28885-2731-49a4-818b-3de53deb6055.jpg" alt="리뷰 이미지">
                             </div>
                         </div>
                         <div class="review-actions">
@@ -364,7 +366,7 @@
 	            <button class="close-modal">&times;</button>
 	        </div>
 	        <div class="modal-body">
-	            <form id="reviewForm">
+	            <form id="reviewForm" th:action="@{|/comments/create-with-images/${upload.id}|}" method="post" enctype="multipart/form-data">
 	                <!-- 숨겨진 uploadId 필드 추가 -->
 	                <input type="hidden" id="uploadId" th:value="${upload.id}">
 	                

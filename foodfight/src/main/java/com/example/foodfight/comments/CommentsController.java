@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.data.domain.Page;
 import java.security.Principal;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -32,7 +33,8 @@ public class CommentsController {
 	private final CommentsService commentsService;
 	private final UserService userService;
 	
-	 @PreAuthorize("isAuthenticated()")
+	//리뷰 생성
+	@PreAuthorize("isAuthenticated()")
 	@PostMapping("/create/{id}")
 	public String createComments(Model model, @PathVariable("id") Integer id,  @Valid CommentsForm commentsForm, 
 			BindingResult bindingResult, Principal principal) {
@@ -47,6 +49,43 @@ public class CommentsController {
 		return String.format("redirect:/upload/detail/%s", id);
 	}
 	
+	// 평점과 작성자 정보를 포함한 리뷰 생성 메서드
+	@PreAuthorize("isAuthenticated()")
+	@PostMapping("/create-with-rating/{id}")
+	public String createCommentsWithRating(Model model, 
+	                                     @PathVariable("id") Integer id,
+	                                     @RequestParam(value="content") String content,
+	                                     @RequestParam(value="rating") Double rating,
+	                                     Principal principal) {
+		Upload upload = this.uploadService.getUpload(id);
+		SiteUser user = this.userService.getUserByUsername(principal.getName());
+		this.commentsService.create(upload, content, user, rating);
+		return String.format("redirect:/upload/detail/%s", id);
+	}
+	
+	// 이미지 업로드를 포함한 리뷰 생성 메서드
+	@PreAuthorize("isAuthenticated()")
+	@PostMapping("/create-with-images/{id}")
+	public String createCommentsWithImages(Model model, 
+	                                     @PathVariable("id") Integer id,
+	                                     @RequestParam(value="content") String content,
+	                                     @RequestParam(value="rating") Double rating,
+	                                     @RequestParam(value="images", required=false) List<MultipartFile> images,
+	                                     Principal principal) {
+	    try {
+	        Upload upload = this.uploadService.getUpload(id);
+	        SiteUser user = this.userService.getUserByUsername(principal.getName());
+	        this.commentsService.create(upload, content, user, rating, images);
+	        return String.format("redirect:/upload/detail/%s", id);
+	    } catch (Exception e) {
+	        // 로그에 오류 기록
+	        e.printStackTrace();
+	        // 오류 메시지와 함께 리다이렉트
+	        return String.format("redirect:/upload/detail/%s?error=true&message=%s", id, e.getMessage());
+	    }
+	}
+	
+	//추천
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/vote/{id}")
     public String commentsVote(Principal principal, @PathVariable("id") Integer id) {
@@ -55,4 +94,15 @@ public class CommentsController {
         this.commentsService.vote(comments, siteUser);
         return String.format("redirect:/upload/detail/%s", comments.getUpload().getId());
     }
+    
+	// 리뷰 목록 조회 API (JSON 응답)
+	@GetMapping("/list/{uploadId}")
+	@ResponseBody
+	public List<Comments> getCommentsList(@PathVariable("uploadId") Integer uploadId,
+	                                    @RequestParam(value="page", defaultValue="0") int page,
+	                                    @RequestParam(value="size", defaultValue="7") int size,
+	                                    @RequestParam(value="sort", defaultValue="latest") String sort) {
+		Upload upload = this.uploadService.getUpload(uploadId);
+		return this.commentsService.getCommentsByUpload(upload, page, size, sort);
+	}
 }

@@ -202,74 +202,8 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // 리뷰 폼 제출 - 수정된 부분
-    const reviewForm = document.getElementById('reviewForm');
-    
-    if (reviewForm) {
-        reviewForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const rating = ratingInput.value;
-            const content = document.getElementById('reviewContent').value;
-            const uploadId = document.getElementById('uploadId').value;
-            
-            if (rating === '0') {
-                alert('별점을 선택해주세요.');
-                return;
-            }
-            
-            if (!content.trim()) {
-                alert('리뷰 내용을 입력해주세요.');
-                return;
-            }
-            
-            // FormData 객체 생성
-            const formData = new FormData();
-            formData.append('rating', rating);
-            formData.append('content', content);
-            formData.append('uploadId', uploadId);
-            
-            // 이미지 파일 추가
-            const imageFiles = document.getElementById('reviewImages').files;
-            for (let i = 0; i < imageFiles.length; i++) {
-                formData.append('images', imageFiles[i]);
-            }
-            
-            // 서버로 리뷰 데이터 전송
-            fetch('/api/comments/create', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('리뷰 등록에 실패했습니다.');
-                }
-                return response.json();
-            })
-            .then(data => {
-                alert('리뷰가 등록되었습니다.');
-                
-                // 새 리뷰를 목록에 추가
-                addReviewToList(data);
-                
-                // 모달 닫기 및 폼 초기화
-                reviewModal.classList.remove('active');
-                reviewForm.reset();
-                imagePreview.innerHTML = '';
-                ratingStars.forEach(s => {
-                    s.classList.remove('fas');
-                    s.classList.add('far');
-                });
-                
-                // 페이지 새로고침 (선택적)
-                // window.location.reload();
-            })
-            .catch(error => {
-                console.error('리뷰 등록 중 오류 발생:', error);
-                alert('리뷰 등록 중 오류가 발생했습니다: ' + error.message);
-            });
-        });
-    }
+
+
     
     // 주소 복사 기능
     const copyAddressBtn = document.querySelector('.copy-address');
@@ -451,4 +385,31 @@ function voteUpload(button) {
             alert(error.message);
         });
     }
+}
+
+// 리뷰 폼 제출 전 유효성 검사 강화
+const reviewForm = document.getElementById('reviewForm');
+
+if (reviewForm) {
+    reviewForm.addEventListener('submit', function(e) {
+        // 기본 제출 동작 방지
+        e.preventDefault();
+        
+        const rating = document.getElementById('ratingInput').value;
+        const content = document.getElementById('reviewContent').value;
+        
+        // 유효성 검사
+        if (rating === '0') {
+            alert('별점을 선택해주세요.');
+            return;
+        }
+        
+        if (!content.trim()) {
+            alert('리뷰 내용을 입력해주세요.');
+            return;
+        }
+        
+        // 유효성 검사 통과 시 폼 제출
+        this.submit();
+    });
 }

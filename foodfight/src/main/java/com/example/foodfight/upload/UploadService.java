@@ -25,4 +25,9 @@ public class UploadService {
             throw new DataNotFoundException("upload not found");
         }
     }
+
+	public Upload save(Upload upload) {
+		return uploadRepository.save(upload);
+		
+	}
 }

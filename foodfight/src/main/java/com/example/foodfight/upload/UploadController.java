@@ -17,7 +17,10 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.example.foodfight.comments.CommentImage;
+import com.example.foodfight.comments.Comments;
 import com.example.foodfight.comments.CommentsForm;
+import com.example.foodfight.comments.CommentsService;
 
 @RequestMapping("/upload")// 프리픽스
 @RequiredArgsConstructor
@@ -25,6 +28,7 @@ import com.example.foodfight.comments.CommentsForm;
 public class UploadController {
 	
 	private final UploadService uploadService;
+	private final CommentsService commentsService;
 	//컨트롤러 -> 서비스 -> 리포지터리
 	@GetMapping("/list") //프리픽스로 인해 /upload + /list로 됨
 	public String list(Model model) {
@@ -37,7 +41,9 @@ public class UploadController {
     @GetMapping(value = "/detail/{id}")
     public String detail(Model model, @PathVariable("id") Integer id, CommentsForm commentsForm) {
         Upload upload = this.uploadService.getUpload(id);
+        List<Comments> commentImages = this.commentsService.getCommentsByUpload(upload);
         model.addAttribute("upload", upload);
+//        model.addAttribute("comment_image", commentImages);
 //        return "upload_detail";  //html
         return "product_detail";
     }

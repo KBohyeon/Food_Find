@@ -2,7 +2,7 @@ package com.example.foodfight.comments;
 
 import com.example.foodfight.upload.Upload;
 import com.example.foodfight.user.SiteUser;
-
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 import jakarta.persistence.CascadeType;
@@ -14,6 +14,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import jakarta.persistence.ManyToMany;
 import com.example.foodfight.user.SiteUser;
@@ -45,6 +47,6 @@ public class Comments {
     @ManyToOne
     private SiteUser author;
     
-//    @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL, orphanRemoval = true)
-//    private List<CommentImage> images;
+    @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CommentImage> images = new ArrayList<>(); // 초기화 추가
 }
