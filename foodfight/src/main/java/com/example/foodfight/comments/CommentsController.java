@@ -22,7 +22,7 @@ import com.example.foodfight.upload.UploadService;
 import com.example.foodfight.user.SiteUser;
 import com.example.foodfight.user.UserService;
 import jakarta.validation.Valid;
-//커밋
+
 
 @RequestMapping("/comments")
 @RequiredArgsConstructor
