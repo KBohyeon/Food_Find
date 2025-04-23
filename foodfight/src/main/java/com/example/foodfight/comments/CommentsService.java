@@ -14,6 +14,9 @@ import org.springframework.data.domain.Sort;
 import java.util.Optional;
 import com.example.foodfight.DataNotFoundException;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
+
 import com.example.foodfight.user.SiteUser;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -29,12 +32,12 @@ public class CommentsService {
 	private final CommentsRepository commentsRepository;
 	private final CommentImageRepository commentImageRepository;
 	private final FileService fileService;
-	private final UploadService uploadService; // UploadService 의존성 추가
+	private final UploadService uploadService; 
     
 	public void create(Upload upload, String content, SiteUser author) {
 		Comments comments = new Comments();
 		comments.setContent(content);
-		comments.setCreateDate(LocalDateTime.now());
+		comments.setCreateDate(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
 		comments.setUpload(upload);
         comments.setAuthor(author);
 		this.commentsRepository.save(comments);
@@ -45,7 +48,7 @@ public class CommentsService {
 	public Comments create(Upload upload, String content, SiteUser author, Double rating) {
 		Comments comments = new Comments();
 		comments.setContent(content);
-		comments.setCreateDate(LocalDateTime.now());
+		comments.setCreateDate(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
 		comments.setUpload(upload);
 		comments.setAuthor(author);
 		comments.setRating(rating);
@@ -64,7 +67,7 @@ public class CommentsService {
 	    try {
 	        Comments comments = new Comments();
 	        comments.setContent(content);
-	        comments.setCreateDate(LocalDateTime.now());
+	        comments.setCreateDate(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
 	        comments.setUpload(upload);
 	        comments.setAuthor(author);
 	        comments.setRating(rating);
@@ -105,7 +108,7 @@ public class CommentsService {
 	    }
 	}
 	
-	// 리뷰 목록 조회 (페이징 및 정렬 기능 포함)
+	// 리뷰 목록 조회 (페이징 및 정렬 기능 포함) 작동안함 고쳐야함 
 	public List<Comments> getCommentsByUpload(Upload upload, int page, int size, String sort) {
 		Pageable pageable;
 		
@@ -177,6 +180,18 @@ public class CommentsService {
 	public Comments getComments(Integer id) {
 	    return getComments(id.longValue());
 	}
+	
+	//리뷰 수정
+    public void modify(Upload upload, String content, SiteUser author, Double rating, List<MultipartFile> images) {
+        Comments comments = new Comments();
+    	comments.setContent(content);
+        comments.setCreateDate(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+        comments.setUpload(upload);
+        comments.setAuthor(author);
+        comments.setRating(rating);
+        comments.setModifyDate(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+        this.commentsRepository.save(comments);
+    }
 	
 	//이미지
 	public List<CommentImage> getCommentImagesByComment(Comments comment) {

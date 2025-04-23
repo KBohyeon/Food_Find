@@ -16,7 +16,7 @@ public class UploadService {
         return this.uploadRepository.findAll();
     }
     
-    //제목 눌렀을 때 정보 불러오기 메소드
+    //메인페이지 식당 정보 불러오기 메소드??
     public Upload getUpload(Integer id) {  
         Optional<Upload> upload = this.uploadRepository.findById(id);
         if (upload.isPresent()) {

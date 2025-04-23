@@ -22,7 +22,7 @@ import com.example.foodfight.upload.UploadService;
 import com.example.foodfight.user.SiteUser;
 import com.example.foodfight.user.UserService;
 import jakarta.validation.Valid;
-//asdasddd
+
 
 @RequestMapping("/comments")
 @RequiredArgsConstructor
@@ -33,7 +33,7 @@ public class CommentsController {
 	private final CommentsService commentsService;
 	private final UserService userService;
 	
-	//리뷰 생성
+	//리뷰 생성 초기 때 만든거 없어도 될거 같은데 확인을 안했음 ㅋㅋ
 	@PreAuthorize("isAuthenticated()")
 	@PostMapping("/create/{id}")
 	public String createComments(Model model, @PathVariable("id") Integer id,  @Valid CommentsForm commentsForm, 
@@ -105,4 +105,22 @@ public class CommentsController {
 		Upload upload = this.uploadService.getUpload(uploadId);
 		return this.commentsService.getCommentsByUpload(upload, page, size, sort);
 	}
+	
+	//리뷰 수정
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/modify/{id}")
+    public String commentsModify(Model model, 
+            @PathVariable("id") Integer id,
+            @RequestParam(value="content") String content,
+            @RequestParam(value="rating") Double rating,
+            @RequestParam(value="images", required=false) List<MultipartFile> images,
+            Principal principal) {
+         Comments comments = this.commentsService.getComments(id);
+         if (!comments.getAuthor().getUsername().equals(principal.getName())) {
+             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "수정권한이 없습니다.");
+         }
+	       return String.format("redirect:/upload/detail/%s", id);
+    }
+	
+	
 }

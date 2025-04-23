@@ -2,8 +2,11 @@ package com.example.foodfight.comments;
 
 import com.example.foodfight.upload.Upload;
 import com.example.foodfight.user.SiteUser;
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -33,9 +36,17 @@ public class Comments {
 
     @Column(columnDefinition = "TEXT")
     private String content;
-
-    private LocalDateTime createDate; 
     
+    
+    private String createDate; 
+    
+    private String modifyDate;
+    //저장할때 처리함 필요없음 아마
+//    @PrePersist
+//    public void onPrePersist(){
+//        this.createDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+//    }
+	
     @ManyToOne 
     private Upload upload;  
     

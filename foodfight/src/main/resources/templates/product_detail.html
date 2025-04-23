@@ -164,6 +164,7 @@
             <section class="review-section">
                 <div class="section-header">
                     <h2>리뷰</h2>
+					<!--//detail.js 의const writeReviewBtn = document.querySelector('.write-review-btn'); 여기도 드감-->
                     <button class="write-review-btn">리뷰 작성하기</button>
                 </div>
 
@@ -244,7 +245,7 @@
                                     <div class="reviewer-name">
 										<span th:if="${comments.author != null}" th:text="${comments.author.username}"></span>님
 									</div>
-                                    <div class="review-date" >2023.05.15</div>
+                                    <div class="review-date" th:text="${comments.createDate}">2023.05.16</div>
                                 </div>
                             </div>
                             <div class="review-rating">
@@ -268,6 +269,11 @@
 							      th:text="${#lists.size(comments.voter)}"></span>
 							  </button>
                             <button class="report-btn"><i class="far fa-flag"></i> 신고</button>
+							<!-- 수정 버튼 - 로그인한 사용자와 글쓴이가 동일할 경우에만 표시 -->
+							<button sec:authorize="isAuthenticated()"th:if="${comments.author != null and #authentication.principal.username == comments.author.username}"
+							    class="edit-btn" th:data-id="${comments.id}">
+							    <i class="far fa-edit"></i> 수정
+							</button>
                         </div>
                     </div>
 
@@ -398,6 +404,7 @@
 	        </div>
 	    </div>
 	</div>
+	
     </div>
 
     <!-- JavaScript -->
@@ -405,13 +412,14 @@
     <script th:src="@{/detail.js}"></script>
     <!-- 카카오맵 API (예시) -->
     <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=YOUR_APP_KEY"></script>
-<!--	<script>
+	<!--추천 꼭 있어야함-->
+	<script>
 		function voteUpload(button) {
 		    const uri = button.dataset.url;  
 		    if (confirm("정말로 추천하시겠습니까?111111111111")) {
 		        location.href = uri;
 		    }
 		}
-	</script>-->
+	</script>
 </body>
 </html>

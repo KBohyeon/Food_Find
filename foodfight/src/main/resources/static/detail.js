@@ -92,13 +92,13 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         return html;
     }
-    
+	
     // 리뷰 작성 모달
     const writeReviewBtn = document.querySelector('.write-review-btn');
     const reviewModal = document.getElementById('reviewModal');
     const closeModal = document.querySelector('.close-modal');
     const cancelBtn = document.querySelector('.cancel-btn');
-    
+    	
     if (writeReviewBtn && reviewModal) {
         writeReviewBtn.addEventListener('click', function() {
             reviewModal.classList.add('active');
@@ -115,6 +115,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 reviewModal.classList.remove('active');
             });
         }
+		
+
         
         // 모달 외부 클릭 시 닫기
         reviewModal.addEventListener('click', function(e) {
@@ -123,6 +125,8 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
+	
+	
     
     // 별점 선택 기능
     const ratingStars = document.querySelectorAll('.rating-input i');
