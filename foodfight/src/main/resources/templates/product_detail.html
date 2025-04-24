@@ -245,12 +245,12 @@
                                     <div class="reviewer-name">
 										<span th:if="${comments.author != null}" th:text="${comments.author.username}"></span>님
 									</div>
-                                    <div class="review-date" th:text="${comments.createDate}">2023.05.16</div>
+                                    <div class="review-date" th:text="${comments.createDate}">날짜</div>
                                 </div>
                             </div>
                             <div class="review-rating">
                                 <span class="stars">⭐</span>
-                                <span class="rating-value" th:text="${comments.rating}">4.5</span>
+                                <span class="rating-value" th:text="${comments.rating}">0</span>
                             </div>
                         </div>
                         <div class="review-content">
@@ -399,6 +399,56 @@
 	                <div class="form-actions">
 	                    <button type="button" class="cancel-btn">취소</button>
 	                    <button type="submit" class="submit-btn">등록하기</button>
+	                </div>
+	            </form>
+	        </div>
+	    </div>
+	</div>
+	
+	<!-- 리뷰 수정 모달 -->
+	<div class="modal" id="editReviewModal">
+	    <div class="modal-content">
+	        <div class="modal-header">
+	            <h3>리뷰 수정하기</h3>
+	            <button class="close-modal">&times;</button>
+	        </div>
+	        <div class="modal-body">
+	            <form id="editReviewForm" method="post" enctype="multipart/form-data">
+	                <!-- 숨겨진 commentId 필드 추가 -->
+	                <input type="hidden" id="editCommentId" name="commentId">
+	                
+	                <div class="form-group">
+	                    <label>평점</label>
+	                    <div class="rating-input">
+	                        <i class="far fa-star" data-rating="1"></i>
+	                        <i class="far fa-star" data-rating="2"></i>
+	                        <i class="far fa-star" data-rating="3"></i>
+	                        <i class="far fa-star" data-rating="4"></i>
+	                        <i class="far fa-star" data-rating="5"></i>
+	                        <input type="hidden" name="rating" id="editRatingInput" value="0">
+	                    </div>
+	                </div>
+	                <div class="form-group">
+	                    <label for="editReviewContent">리뷰 내용</label>
+	                    <textarea id="editReviewContent" name="content" rows="5" placeholder="맛, 서비스, 분위기 등 식당에 대한 솔직한 리뷰를 남겨주세요."></textarea>
+	                </div>
+	                <div class="form-group">
+	                    <label>기존 사진</label>
+	                    <div class="existing-images" id="existingImages">
+	                        <!-- 기존 이미지가 여기에 동적으로 추가됩니다 -->
+	                    </div>
+	                </div>
+	                <div class="form-group">
+	                    <label>새 사진 첨부</label>
+	                    <div class="file-upload">
+	                        <input type="file" id="editReviewImages" name="images" multiple accept="image/*">
+	                        <label for="editReviewImages" class="upload-btn"><i class="fas fa-camera"></i> 사진 선택</label>
+	                        <div class="preview-container" id="editImagePreview"></div>
+	                    </div>
+	                </div>
+	                <div class="form-actions">
+	                    <button type="button" class="cancel-btn">취소</button>
+	                    <button type="submit" class="submit-btn">수정하기</button>
 	                </div>
 	            </form>
 	        </div>

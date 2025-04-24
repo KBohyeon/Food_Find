@@ -42,7 +42,7 @@ public class UploadController {
 	
 	//제목 누르면 나오는 질문 각자의 페이지
     @GetMapping(value = "/detail/{id}")
-    public String detail(Model model, @PathVariable("id") Integer id, CommentsForm commentsForm) {
+    public String detail(Model model, @PathVariable("id") Long id, CommentsForm commentsForm) {
         Upload upload = this.uploadService.getUpload(id);
         List<Comments> commentsList = this.commentsService.getCommentsByUpload(upload);
         

@@ -3,6 +3,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import com.example.foodfight.upload.Upload;
+import com.example.foodfight.upload.UploadRepository;
 import com.example.foodfight.upload.UploadService;
 import com.example.foodfight.user.SiteUser;
 
@@ -33,6 +34,7 @@ public class CommentsService {
 	private final CommentImageRepository commentImageRepository;
 	private final FileService fileService;
 	private final UploadService uploadService; 
+	private final UploadRepository uploadRepository;
     
 	public void create(Upload upload, String content, SiteUser author) {
 		Comments comments = new Comments();
@@ -125,43 +127,37 @@ public class CommentsService {
 		return commentsPage.getContent();
 	}
 	
-	// 업로드에 대한 모든 리뷰 조회
+	// 업로드에 대한 모든 리뷰 기본 조회
 	public List<Comments> getCommentsByUpload(Upload upload) {
 		return commentsRepository.findByUpload(upload);
 	}
 	
-	// 업로드 평점 업데이트
-	@Transactional
-	private void updateUploadRating(Upload upload) {
-		List<Comments> allComments = commentsRepository.findByUpload(upload);
-		
-		if (allComments.isEmpty()) {
-			upload.setRating(0.0);
-		} else {
-			double sum = 0;
-			int count = 0;
-			
-			for (Comments comment : allComments) {
-				if (comment.getRating() != null) {
-					sum += comment.getRating();
-					count++;
-				}
-			}
-			
-			if (count > 0) {
-				double avgRating = sum / count;
-				upload.setRating(Math.round(avgRating * 10) / 10.0); // 소수점 첫째 자리까지 반올림
-			} else {
-				upload.setRating(0.0);
-			}
-		}
-		
-		// 리뷰 수 DB 업데이트
-		upload.setReviewCount(allComments.size());
-		
-		// 업로드 DB 저장
-		uploadService.save(upload);
-	}
+    // 최신순 정렬 메서드
+    public List<Comments> getCommentsByUploadLatest(Upload upload) {
+        return commentsRepository.findByUploadOrderByCreateDateDesc(upload);
+    }
+    
+    // 평점 높은순 정렬 메서드
+    public List<Comments> getCommentsByUploadHighestRating(Upload upload) {
+        return commentsRepository.findByUploadOrderByRatingDesc(upload);
+    }
+    
+    // 평점 낮은순 정렬 메서드
+    public List<Comments> getCommentsByUploadLowestRating(Upload upload) {
+        return commentsRepository.findByUploadOrderByRatingAsc(upload);
+    }
+    
+    public Page<Comments> getCommentsByUploadPaged(Upload upload, Pageable pageable) {
+        return commentsRepository.findByUpload(upload, pageable);
+    }
+
+ // 업로드 평점 업데이트
+    @Transactional
+    private void updateUploadRating(Upload upload) {
+        List<Comments> allComments = commentsRepository.findByUpload(upload);
+        uploadService.updateRating(upload, allComments);
+    }
+	
 	
     public void vote(Comments comments, SiteUser siteUser) {
     	comments.getVoter().add(siteUser);
@@ -197,4 +193,45 @@ public class CommentsService {
 	public List<CommentImage> getCommentImagesByComment(Comments comment) {
 	    return commentImageRepository.findByComment(comment);
 	}
+	
+	//수정
+	@Transactional
+	public Comments update(Comments comment, String content, Double rating, List<MultipartFile> images, List<Long> deleteImageIds) {
+	    // 내용과 평점 업데이트
+	    comment.setContent(content);
+	    comment.setRating(rating);
+	    
+	    // 삭제할 이미지 처리
+	    if (deleteImageIds != null && !deleteImageIds.isEmpty()) {
+	        for (Long imageId : deleteImageIds) {
+	            commentImageRepository.deleteById(imageId);
+	        }
+	    }
+	    
+	    // 새 이미지 추가
+	    if (images != null && !images.isEmpty()) {
+	        for (MultipartFile image : images) {
+	            if (!image.isEmpty()) {
+	                // 이미지 파일 저장 및 URL 가져오기
+	                String imageUrl = fileService.saveFile(image, "comments");
+	                
+	                // 이미지 엔티티 생성 및 저장
+	                CommentImage commentImage = new CommentImage();
+	                commentImage.setComment(comment);
+	                commentImage.setUrl(imageUrl);
+	                commentImageRepository.save(commentImage);
+	            }
+	        }
+	    }
+	    
+	    // 리뷰 저장
+	    Comments updatedComment = commentsRepository.save(comment);
+	    
+	    // 업로드 평점 업데이트
+	    updateUploadRating(comment.getUpload());
+	    
+	    return updatedComment;
+	}
+
+	
 }

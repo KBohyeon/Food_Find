@@ -6,6 +6,7 @@ import java.util.Set;
 
 import com.example.foodfight.comments.Comments;
 import com.example.foodfight.user.SiteUser;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.CascadeType; 
 import jakarta.persistence.Column;
@@ -49,6 +50,7 @@ public class Upload {
     private Integer reviewCount; //리뷰 갯수
     
     @OneToMany(mappedBy = "upload", cascade = CascadeType.REMOVE) 
+    @JsonIgnoreProperties({"upload", "author", "voter", "images"}) // 순환 참조 방지
     private List<Comments> commentsList; 
     
     @ManyToMany

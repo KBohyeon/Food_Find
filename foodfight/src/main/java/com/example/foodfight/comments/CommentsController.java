@@ -36,7 +36,7 @@ public class CommentsController {
 	//리뷰 생성 초기 때 만든거 없어도 될거 같은데 확인을 안했음 ㅋㅋ
 	@PreAuthorize("isAuthenticated()")
 	@PostMapping("/create/{id}")
-	public String createComments(Model model, @PathVariable("id") Integer id,  @Valid CommentsForm commentsForm, 
+	public String createComments(Model model, @PathVariable("id") Long id,  @Valid CommentsForm commentsForm, 
 			BindingResult bindingResult, Principal principal) {
 		Upload upload = this.uploadService.getUpload(id);
 		SiteUser siteUser = this.userService.getUser(principal.getName());
@@ -53,7 +53,7 @@ public class CommentsController {
 	@PreAuthorize("isAuthenticated()")
 	@PostMapping("/create-with-rating/{id}")
 	public String createCommentsWithRating(Model model, 
-	                                     @PathVariable("id") Integer id,
+	                                     @PathVariable("id") Long id,
 	                                     @RequestParam(value="content") String content,
 	                                     @RequestParam(value="rating") Double rating,
 	                                     Principal principal) {
@@ -67,7 +67,7 @@ public class CommentsController {
 	@PreAuthorize("isAuthenticated()")
 	@PostMapping("/create-with-images/{id}")
 	public String createCommentsWithImages(Model model, 
-	                                     @PathVariable("id") Integer id,
+	                                     @PathVariable("id") Long id,
 	                                     @RequestParam(value="content") String content,
 	                                     @RequestParam(value="rating") Double rating,
 	                                     @RequestParam(value="images", required=false) List<MultipartFile> images,
@@ -98,7 +98,7 @@ public class CommentsController {
 	// 리뷰 목록 조회 API (JSON 응답)
 	@GetMapping("/list/{uploadId}")
 	@ResponseBody
-	public List<Comments> getCommentsList(@PathVariable("uploadId") Integer uploadId,
+	public List<Comments> getCommentsList(@PathVariable("uploadId") Long uploadId,
 	                                    @RequestParam(value="page", defaultValue="0") int page,
 	                                    @RequestParam(value="size", defaultValue="7") int size,
 	                                    @RequestParam(value="sort", defaultValue="latest") String sort) {
