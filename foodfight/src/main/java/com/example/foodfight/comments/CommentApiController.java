@@ -13,6 +13,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -88,14 +89,13 @@ public class CommentApiController {
 
     // 정렬 기능이 있는 리뷰 목록 조회 API - 데이터베이스에서 직접 정렬
     @GetMapping("/upload/{uploadId}/comments")
-    public ResponseEntity<List<Comments>> getCommentsByUpload(
+    public ResponseEntity<List<Map<String, Object>>> getCommentsByUpload(
             @PathVariable("uploadId") Long uploadId,
             @RequestParam(value = "sort", required = false, defaultValue = "latest") String sort,
             @RequestParam(value = "page", required = false, defaultValue = "0") int page,
             @RequestParam(value = "size", required = false, defaultValue = "10") int size) {
         
         try {
-            // Long을 Integer로 변환 (UploadService의 getUpload 메서드가 Integer를 받는 경우)
             Upload upload = uploadService.getUpload(uploadId);
             List<Comments> comments;
             
@@ -118,18 +118,69 @@ public class CommentApiController {
             int fromIndex = page * size;
             int toIndex = Math.min(fromIndex + size, comments.size());
             
+            List<Comments> pagedComments;
             if (fromIndex < comments.size()) {
-                comments = comments.subList(fromIndex, toIndex);
+                pagedComments = comments.subList(fromIndex, toIndex);
             } else {
-                comments = List.of();
+                pagedComments = List.of();
             }
             
-            // 캐싱 방지 헤더 추가
+            // 순환 참조 문제를 방지하기 위해 DTO로 변환
+            List<Map<String, Object>> result = new ArrayList<>();
+            for (Comments comment : pagedComments) {
+                Map<String, Object> commentMap = new HashMap<>();
+                commentMap.put("id", comment.getId());
+                commentMap.put("content", comment.getContent());
+                commentMap.put("createDate", comment.getCreateDate());
+                commentMap.put("rating", comment.getRating());
+                
+                if (comment.getAuthor() != null) {
+                    Map<String, Object> authorMap = new HashMap<>();
+                    authorMap.put("id", comment.getAuthor().getId());
+                    authorMap.put("username", comment.getAuthor().getUsername());
+                    commentMap.put("author", authorMap);
+                }
+                
+                if (comment.getVoter() != null) {
+                    commentMap.put("voterCount", comment.getVoter().size());
+                }
+                
+                // 이미지 정보 추가
+                if (comment.getImages() != null && !comment.getImages().isEmpty()) {
+                    List<Map<String, Object>> imagesList = new ArrayList<>();
+                    for (CommentImage image : comment.getImages()) {
+                        Map<String, Object> imageMap = new HashMap<>();
+                        imageMap.put("id", image.getId());
+                        imageMap.put("url", image.getUrl());
+                        imagesList.add(imageMap);
+                    }
+                    commentMap.put("images", imagesList);
+                }
+                
+                result.add(commentMap);
+            }
+            
+            // 총 페이지 수와 현재 페이지 정보 추가
+            Map<String, Object> metaData = new HashMap<>();
+            metaData.put("totalElements", comments.size());
+            metaData.put("totalPages", (int) Math.ceil((double) comments.size() / size));
+            metaData.put("currentPage", page);
+            metaData.put("hasMore", toIndex < comments.size());
+            
+            // 메타데이터를 첫 번째 요소로 추가
+            if (!result.isEmpty()) {
+                result.get(0).put("_meta", metaData);
+            } else {
+                Map<String, Object> emptyResult = new HashMap<>();
+                emptyResult.put("_meta", metaData);
+                result.add(emptyResult);
+            }
+            
             return ResponseEntity.ok()
                     .header("Cache-Control", "no-cache, no-store, must-revalidate")
                     .header("Pragma", "no-cache")
                     .header("Expires", "0")
-                    .body(comments);
+                    .body(result);
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);

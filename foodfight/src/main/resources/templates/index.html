@@ -26,6 +26,7 @@
                 </ul>
             </nav>
             <div class="user-actions">
+				<a th:href="@{/upload/create}" class="btn btn-primary">식당 등록 테스트 버튼</a>
                 <button class="login-btn" sec:authorize="isAnonymous()" th:onclick="|location.href='@{/user/login}'|">로그인</button>
 				<button class="login-btn" sec:authorize="isAuthenticated()" th:onclick="|location.href='@{/user/logout}'|">로그아웃</button>
                 <button class="signup-btn" th:onclick="|location.href='@{/user/signup}'|">회원가입</button>
@@ -78,7 +79,7 @@
                     <div class="restaurant-card" th:each="upload : ${uploadList}"> <!-- uploadList만큼 생성 -->
                         <div class="card-image">
                             <img src="https://source.unsplash.com/350x220/?korean,food" alt="한식당">
-                            <span class="category-tag">한식</span>
+                            <span class="category-tag" th:text="${upload.category}">한식</span>
                         </div>
                         <div class="info">
                             <a th:href="@{|/upload/detail/${upload.id}|}" th:text="${upload.subject}">식당 이름</a>

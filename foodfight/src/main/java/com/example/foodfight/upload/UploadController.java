@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.data.domain.Page;
 import java.security.Principal;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -40,11 +41,41 @@ public class UploadController {
 		return "index";
 	}
 	
+	//식당 등록 테스트 코드
+    @GetMapping("/create")
+    public String questionCreate() {
+        return "uploadtest";
+    }
+    //식당 등록 테스트 코드
+    @PostMapping("/create")
+    public String uploadCreate(@RequestParam(value="subject") String subject, 
+    							@RequestParam(value="content") String content,
+    							@RequestParam(value="category") String category) {
+        this.uploadService.create(subject, content, category);
+        return "redirect:/upload/list"; // 질문 저장후 질문목록으로 이동
+    }
+	
 	//제목 누르면 나오는 질문 각자의 페이지
     @GetMapping(value = "/detail/{id}")
-    public String detail(Model model, @PathVariable("id") Long id, CommentsForm commentsForm) {
+    public String detail(Model model, @PathVariable("id") Long id,  @RequestParam(value = "sort", required = false, defaultValue = "latest") String sort, CommentsForm commentsForm) {
         Upload upload = this.uploadService.getUpload(id);
-        List<Comments> commentsList = this.commentsService.getCommentsByUpload(upload);
+        //최신순으로 정렬되어있음 commentsList
+//        List<Comments> commentsList = this.commentsService.getCommentsByUploadLatest(upload);
+        
+        // 정렬 기준에 따라 댓글 리스트 선택
+        List<Comments> commentsList;
+        switch (sort) {
+            case "ratingDesc":
+                commentsList = this.commentsService.getCommentsByUploadHighestRating(upload);
+                break;
+            case "ratingAsc":
+                commentsList = this.commentsService.getCommentsByUploadLowestRating(upload);
+                break;
+            default: // 최신순
+                commentsList = this.commentsService.getCommentsByUploadLatest(upload);
+                break;
+        }
+
         
         // 각 댓글에 연결된 이미지 가져오기
         Map<Integer, List<CommentImage>> commentImagesMap = new HashMap<>();
@@ -56,6 +87,7 @@ public class UploadController {
         model.addAttribute("upload", upload);
         model.addAttribute("comment_image", commentsList);
         model.addAttribute("commentImagesMap", commentImagesMap); // 이미지 맵 추가
+        model.addAttribute("sort", sort); // 현재 정렬 기준 전달
 //        return "upload_detail";  //html
         return "product_detail";
     }

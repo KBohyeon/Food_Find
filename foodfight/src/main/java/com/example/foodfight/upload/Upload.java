@@ -43,7 +43,7 @@ public class Upload {
     @Column(length = 500)
     private String imagePath; //사진
 
-    private LocalDateTime createDate; //날짜, 시간
+    private String createDate; //날짜, 시간
     
     private Double rating; //점수
     

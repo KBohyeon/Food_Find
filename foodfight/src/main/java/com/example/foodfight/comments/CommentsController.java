@@ -87,6 +87,7 @@ public class CommentsController {
 	
 	//추천
     @PreAuthorize("isAuthenticated()")
+    
     @GetMapping("/vote/{id}")
     public String commentsVote(Principal principal, @PathVariable("id") Integer id) {
         Comments comments = this.commentsService.getComments(id);
@@ -95,16 +96,6 @@ public class CommentsController {
         return String.format("redirect:/upload/detail/%s", comments.getUpload().getId());
     }
     
-	// 리뷰 목록 조회 API (JSON 응답)
-	@GetMapping("/list/{uploadId}")
-	@ResponseBody
-	public List<Comments> getCommentsList(@PathVariable("uploadId") Long uploadId,
-	                                    @RequestParam(value="page", defaultValue="0") int page,
-	                                    @RequestParam(value="size", defaultValue="7") int size,
-	                                    @RequestParam(value="sort", defaultValue="latest") String sort) {
-		Upload upload = this.uploadService.getUpload(uploadId);
-		return this.commentsService.getCommentsByUpload(upload, page, size, sort);
-	}
 	
 	//리뷰 수정
     @PreAuthorize("isAuthenticated()")

@@ -1,11 +1,19 @@
 package com.example.foodfight.upload;
 
+import java.util.ArrayList;
 import java.util.List;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
 import lombok.RequiredArgsConstructor;
 import java.util.Optional;
 import com.example.foodfight.DataNotFoundException;
+import com.example.foodfight.comments.CommentImage;
 import com.example.foodfight.comments.Comments;
+import com.example.foodfight.user.SiteUser;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import jakarta.transaction.Transactional;
 
@@ -14,9 +22,26 @@ import jakarta.transaction.Transactional;
 public class UploadService {
 
     private final UploadRepository uploadRepository;
+    
+	// 식당 등록 이미지 업로드를 포함한 리뷰 생성 메서드
+	@Transactional
+	public void create(String subject, String content, String category) {
+	        Upload upload2 = new Upload();
+	        upload2.setSubject(subject);
+	        upload2.setContent(content);
+	        upload2.setCategory(category);
+	        upload2.setCreateDate(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+	        this.uploadRepository.save(upload2);
+	}
+
 
     public List<Upload> getList() {
-        return this.uploadRepository.findAll();
+//        return this.uploadRepository.findAll();
+        List<Upload> uploads = this.uploadRepository.findAll();
+        uploads.forEach(upload -> {
+            System.out.println(upload.getCategory());  // 로그로 카테고리 출력 확인
+        });
+        return uploads;
     }
     
     //메인페이지 식당 정보 불러오기 메소드??

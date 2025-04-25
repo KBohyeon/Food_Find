@@ -226,16 +226,22 @@
                 </div>
 
                 <!-- 리뷰 필터 -->
-                <div class="review-filter">
-                    <button class="filter-btn active">최신순</button>
-                    <button class="filter-btn">평점 높은순</button>
-                    <button class="filter-btn">평점 낮은순</button>
-                </div>
+				<div class="review-filter">
+				    <a th:href="@{|/upload/detail/${upload.id}?sort=latest|}">
+				        <button class="filter-btn" th:classappend="${sort == 'latest'} ? ' active'">최신순</button>
+				    </a>
+				    <a th:href="@{|/upload/detail/${upload.id}?sort=ratingDesc|}">
+				        <button class="filter-btn" th:classappend="${sort == 'ratingDesc'} ? ' active'">평점 높은순</button>
+				    </a>
+				    <a th:href="@{|/upload/detail/${upload.id}?sort=ratingAsc|}">
+				        <button class="filter-btn" th:classappend="${sort == 'ratingAsc'} ? ' active'">평점 낮은순</button>
+				    </a>
+				</div>
 
                 <!-- 리뷰 목록 -->
                 <div class="review-list" id="reviewList">
-                    <!-- 리뷰 아이템 (7개 표시) -->
-                    <div class="review-item" th:each="comments : ${upload.commentsList}">
+                    <!-- 리뷰 기본 최신순으로 보이게 comment_image는 최신으로 정렬 해놨음 -->
+                    <div class="review-item" th:each="comments : ${comment_image}">
                         <div class="review-header">
                             <div class="reviewer-info">
                                 <div class="reviewer-avatar">

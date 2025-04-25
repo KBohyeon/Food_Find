@@ -1,0 +1,20 @@
+<html>
+<div layout:fragment="content">
+    <h5>질문등록</h5>
+    <form th:action="@{/upload/create}" method="post">
+        <div class="mb-3">
+            <label for="subject">제목</label>
+            <input type="text" name="subject" id="subject">
+        </div>
+        <div class="mb-3">
+            <label for="content">내용</label>
+            <textarea name="content" id="content" class="form-control" rows="10"></textarea>
+        </div>
+		<div class="mb-3">
+		    <label for="content">카테고리</label>
+		    <textarea name="category" id="category" class="form-control" rows="10"></textarea>
+		</div>
+        <input type="submit" value="저장하기">
+    </form>
+</div>
+</html>
