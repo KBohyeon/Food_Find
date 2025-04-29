@@ -1,5 +1,6 @@
 package com.example.foodfight.upload;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +26,8 @@ import com.example.foodfight.comments.CommentImage;
 import com.example.foodfight.comments.Comments;
 import com.example.foodfight.comments.CommentsForm;
 import com.example.foodfight.comments.CommentsService;
+import com.example.foodfight.user.SiteUser;
+import com.example.foodfight.user.UserService;
 
 @RequestMapping("/upload")// 프리픽스
 @RequiredArgsConstructor
@@ -33,26 +36,112 @@ public class UploadController {
 	
 	private final UploadService uploadService;
 	private final CommentsService commentsService;
+    private final UserService userService;
 	//컨트롤러 -> 서비스 -> 리포지터리
 	@GetMapping("/list") //프리픽스로 인해 /upload + /list로 됨
 	public String list(Model model) {
 		List<Upload> uploadList = this.uploadService.getList();
-		model.addAttribute("uploadList", uploadList);
+	    List<Upload> hansikList = new ArrayList<>();
+	    List<Upload> jungsikList = new ArrayList<>();
+	    List<Upload> ilsikList = new ArrayList<>();
+	    List<Upload> yangsikList = new ArrayList<>();
+	    for (Upload upload : uploadList) {
+	        if ("한식".equals(upload.getCategory())) {
+	            hansikList.add(upload);
+	        } else if ("중식".equals(upload.getCategory())) {
+	            jungsikList.add(upload);
+	        } else if ("일식".equals(upload.getCategory())) {
+	            ilsikList.add(upload);
+	        } else if ("양식".equals(upload.getCategory())) {
+	            yangsikList.add(upload);
+	        }
+	    }
+	    
+	    // 모델에 담기
+	    model.addAttribute("hansikList", hansikList);
+	    model.addAttribute("jungsikList", jungsikList);
+	    model.addAttribute("ilsikList", ilsikList);
+	    model.addAttribute("yangsikList", yangsikList);
+		model.addAttribute("uploadList", uploadList);//기본 
 		return "index";
 	}
 	
-	//식당 등록 테스트 코드
+    // 식당 등록 폼 페이지
     @GetMapping("/create")
-    public String questionCreate() {
-        return "uploadtest";
+    @PreAuthorize("isAuthenticated()")
+    public String createForm() {
+        return "upload_form";
     }
-    //식당 등록 테스트 코드
+    
+    // 식당 등록 처리
     @PostMapping("/create")
-    public String uploadCreate(@RequestParam(value="subject") String subject, 
-    							@RequestParam(value="content") String content,
-    							@RequestParam(value="category") String category) {
-        this.uploadService.create(subject, content, category);
-        return "redirect:/upload/list"; // 질문 저장후 질문목록으로 이동
+    @PreAuthorize("isAuthenticated()")
+    public String create(@RequestParam("subject") String subject,
+                         @RequestParam("content") String content,
+                         @RequestParam("category") String category,
+                         @RequestParam("menu1") String menu1,
+                         @RequestParam("menu1Price") String menu1Price,
+                         @RequestParam("menu2") String menu2,
+                         @RequestParam("menu2Price") String menu2Price,
+                         @RequestParam("menu3") String menu3,
+                         @RequestParam("menu3Price") String menu3Price,
+                         @RequestParam("openTime") String openTime,
+                         @RequestParam("closeTime") String closeTime,
+                         @RequestParam("dayOff") String dayOff,
+                         @RequestParam("phone") String phone,
+                         @RequestParam("tag1") String tag1,
+                         @RequestParam("tag2") String tag2,
+                         @RequestParam(value = "location", required = false) String location,
+                         @RequestParam(value = "mainImage", required = false) MultipartFile mainImage,
+                         @RequestParam(value = "additionalImages", required = false) List<MultipartFile> additionalImages,
+                         Principal principal) {
+        
+        SiteUser siteUser = userService.getUser(principal.getName());
+        
+        uploadService.create(subject, content, category, location, menu1, menu1Price, menu2, menu2Price, menu3, menu3Price, 
+        					 openTime, closeTime, dayOff, phone, tag1, tag2, mainImage, additionalImages, siteUser);
+        
+        return "redirect:/upload/list";
+    }
+    
+    // 식당 수정 폼 페이지
+    @GetMapping("/modify/{id}")
+    @PreAuthorize("isAuthenticated()")
+    public String modifyForm(@PathVariable("id") Long id, Model model, Principal principal) {
+        Upload upload = uploadService.getUpload(id);
+        
+        // 작성자 확인
+        if (!upload.getAuthor().getUsername().equals(principal.getName())) {
+            return "redirect:/upload/detail/" + id;
+        }
+        
+        model.addAttribute("upload", upload);
+        return "upload_form";
+    }
+    
+    // 식당 수정 처리
+    @PostMapping("/modify/{id}")
+    @PreAuthorize("isAuthenticated()")
+    public String modify(@PathVariable("id") Long id,
+                         @RequestParam("subject") String subject,
+                         @RequestParam("content") String content,
+                         @RequestParam("category") String category,
+                         @RequestParam(value = "location", required = false) String location,
+                         @RequestParam(value = "mainImage", required = false) MultipartFile mainImage,
+                         @RequestParam(value = "additionalImages", required = false) List<MultipartFile> additionalImages,
+                         @RequestParam(value = "deleteImageIds", required = false) List<Long> deleteImageIds,
+                         Principal principal) {
+        
+        Upload upload = uploadService.getUpload(id);
+        
+        // 작성자 확인
+        if (!upload.getAuthor().getUsername().equals(principal.getName())) {
+            return "redirect:/upload/detail/" + id;
+        }
+        
+        uploadService.update(upload, subject, content, category, location, mainImage, additionalImages, deleteImageIds);
+        
+        return "redirect:/upload/detail/" + id;
     }
 	
 	//제목 누르면 나오는 질문 각자의 페이지

@@ -396,7 +396,7 @@
         });
     }
     
-    // 카카오맵 API 초기화
+/*    // 카카오맵 API 초기화
     function initMap() {
         if (typeof kakao !== 'undefined' && document.getElementById('map')) {
             const mapContainer = document.getElementById('map');
@@ -467,7 +467,7 @@
                 initMap();
             }
         });
-    }
+    }*/
   
     
     // 페이지 로드 시 첫 페이지 리뷰 로드

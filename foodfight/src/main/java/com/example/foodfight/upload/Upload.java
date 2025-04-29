@@ -1,6 +1,6 @@
 package com.example.foodfight.upload;
 import java.time.LocalDateTime;
-
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -17,6 +17,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany; 
 import java.util.Set;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
+
 import com.example.foodfight.user.SiteUser;
 import lombok.Getter;
 import lombok.Setter;
@@ -40,14 +42,37 @@ public class Upload {
     
     private String location; // 위치 정보
     
-    @Column(length = 500)
-    private String imagePath; //사진
+    private String imagePath; //대표 이미지
 
     private String createDate; //날짜, 시간
     
     private Double rating; //점수
     
     private Integer reviewCount; //리뷰 갯수
+
+    private String menu1; //메뉴
+    private String menu1Price;
+    
+    private String menu2;
+    private String menu2Price;
+    
+    private String menu3;
+    private String menu3Price;
+    
+    private String openTime; //오픈시간
+    
+    private String closeTime; //닫는 시간
+    
+    private String dayOff; //쉬는 날
+    
+    private String phone; //전화번호
+    
+    private String tag1; //태그
+    
+    private String tag2;
+    
+    @OneToMany(mappedBy = "upload", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<UploadImage> images = new ArrayList<>();
     
     @OneToMany(mappedBy = "upload", cascade = CascadeType.REMOVE) 
     @JsonIgnoreProperties({"upload", "author", "voter", "images"}) // 순환 참조 방지
@@ -55,5 +80,12 @@ public class Upload {
     
     @ManyToMany
     Set<SiteUser> voter;
+
+    private String modifyDate;//수정 날짜
+    
+    @ManyToOne
+//    @JsonIgnoreProperties({"commentsList", "voter"}) // 순환 참조 방지
+    private SiteUser author;
+
     
 }

@@ -1,14 +1,30 @@
+
+//햄버거 버튼 활성화
+function toggleMenu() {
+    const menu = document.getElementById('mobile-menu');
+    if (menu.style.display === 'block') {
+        menu.style.display = 'none';
+    } else {
+        menu.style.display = 'block';
+    }
+}
+
+
 // 모바일 메뉴 토글
 document.addEventListener('DOMContentLoaded', function() {
     const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
     
     if (mobileMenuBtn) {
         mobileMenuBtn.addEventListener('click', function() {
-            // 모바일 메뉴 구현
-            // 실제 구현에서는 모바일 메뉴를 표시하는 코드를 추가합니다
-            alert('모바일 메뉴가 열립니다.');
+
         });
     }
+	else {
+		        menu.style.display = 'block';
+		    }
+
+
+
     
     // 카테고리 버튼 활성화
     const categoryBtns = document.querySelectorAll('.category-btn');

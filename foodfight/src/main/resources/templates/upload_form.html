@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>식당 등록 | 푸드파인더</title>
+    <!-- Thymeleaf를 사용한 정적 리소스 참조 -->
+    <link rel="stylesheet" th:href="@{/main.css}">
+    <link rel="stylesheet" th:href="@{/header.css}">
+    <link rel="stylesheet" th:href="@{/footer.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        .upload-form {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .form-title {
+            margin-bottom: 20px;
+            text-align: center;
+            color: #333;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        
+        textarea.form-control {
+            min-height: 150px;
+            resize: vertical;
+        }
+        
+        .btn-primary {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #ff6b6b;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        
+        .btn-primary:hover {
+            background-color: #ff5252;
+        }
+        
+        .custom-file {
+            position: relative;
+            display: block;
+            width: 100%;
+        }
+        
+        .custom-file-input {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+            z-index: 2;
+        }
+        
+        .custom-file-label {
+            display: block;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            text-align: center;
+            color: #6c757d;
+            cursor: pointer;
+        }
+        
+        .image-preview-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .image-preview {
+            position: relative;
+            width: 150px;
+            height: 150px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .image-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .remove-image {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            width: 20px;
+            height: 20px;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .existing-images {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .existing-image {
+            position: relative;
+            width: 150px;
+            height: 150px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .existing-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+    </style>
+</head>
+<body>
+    <!-- 헤더 섹션 (생략) -->
+    
+    <!-- 메인 콘텐츠 -->
+    <main>
+        <div class="upload-form">
+            <h2 class="form-title" th:text="${upload != null} ? '식당 정보 수정' : '새 식당 등록'">새 식당 등록</h2>
+            
+            <form th:action="${upload != null} ? @{|/upload/modify/${upload.id}|} : @{/upload/create}" 
+                  method="post" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="subject">식당 이름</label>
+                    <input type="text" name="subject" id="subject" class="form-control" 
+                           th:value="${upload != null ? upload.subject : ''}" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="category">카테고리</label>
+                    <select name="category" id="category" class="form-control" required>
+                        <option value="">카테고리 선택</option>
+                        <option value="한식" th:selected="${upload != null && upload.category == '한식'}">한식</option>
+                        <option value="중식" th:selected="${upload != null && upload.category == '중식'}">중식</option>
+                        <option value="일식" th:selected="${upload != null && upload.category == '일식'}">일식</option>
+                        <option value="양식" th:selected="${upload != null && upload.category == '양식'}">양식</option>
+                        <option value="분식" th:selected="${upload != null && upload.category == '분식'}">분식</option>
+                        <option value="카페" th:selected="${upload != null && upload.category == '카페'}">카페</option>
+                        <option value="기타" th:selected="${upload != null && upload.category == '기타'}">기타</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="location">위치</label>
+                    <input type="text" name="location" id="location" class="form-control" 
+                           th:value="${upload != null ? upload.location : ''}" 
+                           placeholder="예: 서울시 강남구 테헤란로 123">
+                </div>
+                
+                <div class="form-group">
+                    <label for="content">소개글</label>
+                    <textarea name="content" id="content" class="form-control" rows="5" 
+                              th:text="${upload != null ? upload.content : ''}"></textarea>
+                </div>
+				
+				<!-- 대표 메뉴 1 -->
+				<div class="form-group">
+				    <label for="menu1">대표 메뉴 1</label>
+				    <input type="text" name="menu1" id="menu1" class="form-control" 
+				           th:value="${upload != null ? upload.menu1 : ''}" placeholder="예: 김치찌개">
+				    <input type="number" name="menu1Price" id="menu1Price" class="form-control" 
+				           th:value="${upload != null ? upload.menu1Price : ''}" placeholder="가격 (원)">
+				</div>
+
+				<!-- 대표 메뉴 2 -->
+				<div class="form-group">
+				    <label for="menu2">대표 메뉴 2</label>
+				    <input type="text" name="menu2" id="menu2" class="form-control" 
+				           th:value="${upload != null ? upload.menu2 : ''}" placeholder="예: 된장찌개">
+				    <input type="number" name="menu2Price" id="menu2Price" class="form-control" 
+				           th:value="${upload != null ? upload.menu2Price : ''}" placeholder="가격 (원)">
+				</div>
+
+				<!-- 대표 메뉴 3 -->
+				<div class="form-group">
+				    <label for="menu3">대표 메뉴 3</label>
+				    <input type="text" name="menu3" id="menu3" class="form-control" 
+				           th:value="${upload != null ? upload.menu3 : ''}" placeholder="예: 제육볶음">
+				    <input type="number" name="menu3Price" id="menu3Price" class="form-control" 
+				           th:value="${upload != null ? upload.menu3Price : ''}" placeholder="가격 (원)">
+				</div>
+
+				<!-- 영업시간 -->
+				<div class="form-group">
+				    <label for="openTime">영업 시작 시간</label>
+				    <input type="time" name="openTime" id="openTime" class="form-control" 
+				           th:value="${upload != null ? upload.openTime : ''}">
+				</div>
+
+				<div class="form-group">
+				    <label for="closeTime">영업 종료 시간</label>
+				    <input type="time" name="closeTime" id="closeTime" class="form-control" 
+				           th:value="${upload != null ? upload.closeTime : ''}">
+				</div>
+
+				<!-- 휴무일 -->
+				<div class="form-group">
+				    <label for="dayOff">휴무일</label>
+				    <input type="text" name="dayOff" id="dayOff" class="form-control" 
+				           th:value="${upload != null ? upload.dayOff : ''}" placeholder="예: 매주 월요일">
+				</div>
+
+				<!-- 전화번호 -->
+				<div class="form-group">
+				    <label for="phone">전화번호</label>
+				    <input type="tel" name="phone" id="phone" class="form-control" 
+				           th:value="${upload != null ? upload.phone : ''}" placeholder="예: 02-123-4567">
+				</div>
+				
+				<!-- 식당 태그 1 -->
+				<div class="form-group">
+				    <label for="tag1">식당 태그 1</label>
+				    <input type="text" name="tag1" id="tag1" class="form-control" 
+				           th:value="${upload != null ? upload.tag1 : ''}" placeholder="예: 삼겹살, 파스타(대표 메뉴)">
+				</div>
+
+				<!-- 식당 태그 2 -->
+				<div class="form-group">
+				    <label for="tag2">식당 태그 2</label>
+				    <input type="text" name="tag2" id="tag2" class="form-control" 
+				           th:value="${upload != null ? upload.tag2 : ''}" placeholder="예: 연인, 가족, 친구(분위기)">
+				</div>
+                
+                <div class="form-group">
+                    <label for="mainImage">대표 이미지</label>
+                    <div class="custom-file">
+                        <input type="file" name="mainImage" id="mainImage" class="custom-file-input" accept="image/*">
+                        <label class="custom-file-label" for="mainImage">이미지 선택</label>
+                    </div>
+                    <small class="form-text text-muted">JPG, PNG, GIF 형식의 이미지 파일을 업로드해주세요.</small>
+                    
+                    <!-- 대표 이미지 미리보기 -->
+                    <div class="image-preview-container" id="mainImagePreview">
+                        <!-- 기존 대표 이미지가 있는 경우 표시 -->
+                        <div class="image-preview" th:if="${upload != null && upload.imagePath != null}">
+                            <img th:src="${upload.imagePath}" alt="대표 이미지">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="additionalImages">추가 이미지</label>
+                    <div class="custom-file">
+                        <input type="file" name="additionalImages" id="additionalImages" class="custom-file-input" 
+                               accept="image/*" multiple>
+                        <label class="custom-file-label" for="additionalImages">이미지 선택 (여러 장 가능)</label>
+                    </div>
+                    <small class="form-text text-muted">최대 5장까지 업로드 가능합니다.</small>
+                    
+                    <!-- 기존 추가 이미지 표시 (수정 시) -->
+                    <div class="existing-images" th:if="${upload != null && upload.images != null && !upload.images.isEmpty()}">
+                        <div class="existing-image" th:each="img : ${upload.images}">
+                            <img th:src="${img.url}" alt="식당 이미지">
+                            <span class="remove-image" th:data-id="${img.id}">&times;</span>
+                            <input type="hidden" name="existingImageIds" th:value="${img.id}">
+                        </div>
+                    </div>
+                    
+                    <!-- 추가 이미지 미리보기 -->
+                    <div class="image-preview-container" id="additionalImagesPreview"></div>
+                </div>
+                
+                <button type="submit" class="btn-primary">
+                    <span th:text="${upload != null} ? '수정하기' : '등록하기'">등록하기</span>
+                </button>
+            </form>
+        </div>
+    </main>
+    
+    <!-- 푸터 섹션 (생략) -->
+    
+    <!-- JavaScript -->
+    <script th:src="@{/main.js}"></script>
+    <script>
+        // 대표 이미지 미리보기
+        document.getElementById('mainImage').addEventListener('change', function() {
+            const file = this.files[0];
+            if (file) {
+                const fileName = file.name;
+                const label = document.querySelector('label[for="mainImage"]');
+                label.textContent = fileName;
+                
+                // 미리보기 컨테이너 비우기
+                const previewContainer = document.getElementById('mainImagePreview');
+                previewContainer.innerHTML = '';
+                
+                // 이미지 미리보기 생성
+                const preview = document.createElement('div');
+                preview.className = 'image-preview';
+                
+                const img = document.createElement('img');
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    img.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+                
+                preview.appendChild(img);
+                previewContainer.appendChild(preview);
+            }
+        });
+        
+        // 추가 이미지 미리보기
+        document.getElementById('additionalImages').addEventListener('change', function() {
+            const files = this.files;
+            if (files.length > 0) {
+                const fileNames = Array.from(files).map(file => file.name).join(', ');
+                const label = document.querySelector('label[for="additionalImages"]');
+                label.textContent = files.length > 1 ? `${files.length}개 파일 선택됨` : fileNames;
+                
+                // 미리보기 컨테이너 비우기
+                const previewContainer = document.getElementById('additionalImagesPreview');
+                previewContainer.innerHTML = '';
+                
+                // 각 이미지에 대한 미리보기 생성
+                Array.from(files).forEach(file => {
+                    const preview = document.createElement('div');
+                    preview.className = 'image-preview';
+                    
+                    const img = document.createElement('img');
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        img.src = e.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                    
+                    const removeBtn = document.createElement('span');
+                    removeBtn.className = 'remove-image';
+                    removeBtn.innerHTML = '&times;';
+                    removeBtn.addEventListener('click', function() {
+                        preview.remove();
+                    });
+                    
+                    preview.appendChild(img);
+                    preview.appendChild(removeBtn);
+                    previewContainer.appendChild(preview);
+                });
+            }
+        });
+        
+        // 기존 이미지 삭제 처리
+        document.querySelectorAll('.existing-image .remove-image').forEach(button => {
+            button.addEventListener('click', function() {
+                const imageId = this.getAttribute('data-id');
+                const imageDiv = this.parentElement;
+                
+                // 이미지 삭제 표시 (실제 삭제는 폼 제출 시 처리)
+                imageDiv.style.opacity = '0.3';
+                const input = imageDiv.querySelector('input[name="existingImageIds"]');
+                input.name = 'deleteImageIds';
+                
+                // 삭제 취소 버튼 추가
+                const undoButton = document.createElement('span');
+                undoButton.className = 'undo-delete';
+                undoButton.textContent = '취소';
+                undoButton.style.position = 'absolute';
+                undoButton.style.top = '50%';
+                undoButton.style.left = '50%';
+                undoButton.style.transform = 'translate(-50%, -50%)';
+                undoButton.style.backgroundColor = 'rgba(0, 0, 0, 0.7)';
+                undoButton.style.color = 'white';
+                undoButton.style.padding = '4px 8px';
+                undoButton.style.borderRadius = '4px';
+                undoButton.style.cursor = 'pointer';
+                
+                undoButton.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    imageDiv.style.opacity = '1';
+                    input.name = 'existingImageIds';
+                    this.remove();
+                });
+                
+                imageDiv.appendChild(undoButton);
+            });
+        });
+    </script>
+</body>
+</html>

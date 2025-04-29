@@ -44,8 +44,8 @@
         <!-- 식당 대표 사진 -->
         <section class="restaurant-hero">
             <div class="hero-image">
-                <img th:if="${upload.imagePath != null}" th:src="${upload.imagePath}" alt="식당 대표 이미지">
-                <img th:unless="${upload.imagePath != null}" src="https://source.unsplash.com/1200x400/?restaurant,food" alt="기본 식당 이미지">
+                <img th:src="@{'/uploads' + ${upload.imagePath}}" alt="기본 식당 이미지">
+<!--				<img th:src="@{'/uploads' + ${upload.imagePath}}" alt="기본 식당 이미지">-->
                 <div class="back-button">
                     <a th:href="@{/}"><i class="fas fa-arrow-left"></i> 목록으로</a>
                 </div>
@@ -60,8 +60,8 @@
                         <h1 class="restaurant-title" th:text="${upload.subject}">식당 이름</h1>
                         <div class="tags">
                             <span class="tag" th:text="${'#' + upload.category}">카테고리</span>
-                            <span class="tag">#가성비</span>
-                            <span class="tag">#데이트</span>
+                            <span class="tag" th:text="${'#' + upload.tag1}">태그1</span>
+                            <span class="tag" th:text="${'#' + upload.tag2}">태그2</span>
                         </div>
                     </div>
                     <div class="rating-info">
@@ -87,7 +87,7 @@
                 <div class="restaurant-location">
                     <h3><i class="fas fa-map-marker-alt"></i> 위치 정보</h3>
                     <p class="address" th:text="${upload.location != null ? upload.location : '위치 정보가 등록되지 않았습니다.'}">
-                        서울특별시 강남구 테헤란로 123 푸드빌딩 1층
+                        주소
                     </p>
                     <div class="map-container">
                         <!-- 지도 API 연동 (카카오맵 또는 구글맵) -->
@@ -105,19 +105,15 @@
                     <ul class="info-list">
                         <li>
                             <span class="info-label">영업시간</span>
-                            <span class="info-value">11:00 - 22:00</span>
+                            <span class="info-value" th:text="${upload.openTime} + ' ~ ' + ${upload.closeTime}">11:00 - 22:00</span>
                         </li>
                         <li>
                             <span class="info-label">휴무일</span>
-                            <span class="info-value">매주 월요일</span>
+                            <span class="info-value" th:text="${upload.dayOff}">매주 월요일</span>
                         </li>
                         <li>
                             <span class="info-label">전화번호</span>
-                            <span class="info-value">02-123-4567</span>
-                        </li>
-                        <li>
-                            <span class="info-label">웹사이트</span>
-                            <span class="info-value"><a href="#" target="_blank">www.restaurant.com</a></span>
+                            <span class="info-value" th:text="${upload.phone}">02-123-4567</span>
                         </li>
                     </ul>
                 </div>
@@ -126,34 +122,22 @@
                 <div class="menu-info">
                     <h3><i class="fas fa-utensils"></i> 대표 메뉴</h3>
                     <ul class="menu-list">
-                        <li class="menu-item">
-                            <div class="menu-image">
-                                <img src="https://source.unsplash.com/100x100/?food" alt="메뉴 이미지">
-                            </div>
+                        <li class="menu-item"><!--메뉴 갯수만큼 루프 돌려야함-->
                             <div class="menu-details">
-                                <h4 class="menu-name">시그니처 메뉴</h4>
-                                <p class="menu-description">신선한 재료로 만든 특별한 요리</p>
-                                <p class="menu-price">25,000원</p>
+                                <h4 class="menu-name" th:text="${upload.menu1}">시그니처 메뉴</h4>
+                                <p class="menu-price" th:text="${upload.menu1Price} + '원'"></p>
                             </div>
                         </li>
                         <li class="menu-item">
-                            <div class="menu-image">
-                                <img src="https://source.unsplash.com/100x100/?dish" alt="메뉴 이미지">
-                            </div>
                             <div class="menu-details">
-                                <h4 class="menu-name">인기 메뉴</h4>
-                                <p class="menu-description">많은 손님들이 찾는 인기 메뉴</p>
-                                <p class="menu-price">18,000원</p>
+                                <h4 class="menu-name" th:text="${upload.menu2}">인기 메뉴</h4>
+                                <p class="menu-price" th:text="${upload.menu2Price} + '원'"></p>
                             </div>
                         </li>
                         <li class="menu-item">
-                            <div class="menu-image">
-                                <img src="https://source.unsplash.com/100x100/?meal" alt="메뉴 이미지">
-                            </div>
                             <div class="menu-details">
-                                <h4 class="menu-name">계절 메뉴</h4>
-                                <p class="menu-description">제철 재료로 만든 특별한 요리</p>
-                                <p class="menu-price">22,000원</p>
+                                <h4 class="menu-name" th:text="${upload.menu3}">계절 메뉴</h4>
+                                <p class="menu-price" th:text="${upload.menu3Price} + '원'"></p>
                             </div>
                         </li>
                     </ul>
@@ -276,7 +260,7 @@
 							  </button>
                             <button class="report-btn"><i class="far fa-flag"></i> 신고</button>
 							<!-- 수정 버튼 - 로그인한 사용자와 글쓴이가 동일할 경우에만 표시 -->
-							<button sec:authorize="isAuthenticated()"th:if="${comments.author != null and #authentication.principal.username == comments.author.username}"
+							<button sec:authorize="isAuthenticated()" th:if="${comments.author != null and #authentication.principal.username == comments.author.username}"
 							    class="edit-btn" th:data-id="${comments.id}">
 							    <i class="far fa-edit"></i> 수정
 							</button>
@@ -466,8 +450,6 @@
     <!-- JavaScript -->
     <script th:src="@{/main.js}"></script>
     <script th:src="@{/detail.js}"></script>
-    <!-- 카카오맵 API (예시) -->
-    <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=YOUR_APP_KEY"></script>
 	<!--추천 꼭 있어야함-->
 	<script>
 		function voteUpload(button) {
@@ -476,6 +458,47 @@
 		        location.href = uri;
 		    }
 		}
+	</script>
+	<!--카카오맵 API detail.js로 가야함-->
+	<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=e7529bad0bbe37f73d7b8b75e0116827&libraries=services"></script>
+	<script>
+	var location2 = "[[${upload.location}]]";
+	var mapContainer = document.getElementById('map'), // 지도를 표시할 div 
+	    mapOption = {
+	        center: new kakao.maps.LatLng(33.450708, 126.570667), // 지도의 중심좌표
+	        level: 3 // 지도의 확대 레벨
+	    };  
+
+	// 지도를 생성합니다    
+	var map = new kakao.maps.Map(mapContainer, mapOption); 
+
+	// 주소-좌표 변환 객체를 생성합니다
+	var geocoder = new kakao.maps.services.Geocoder();
+	
+	// 주소로 좌표를 검색합니다
+	geocoder.addressSearch(location2, function(result, status) {
+
+	    // 정상적으로 검색이 완료됐으면 
+	     if (status === kakao.maps.services.Status.OK) {
+
+	        var coords = new kakao.maps.LatLng(result[0].y, result[0].x);
+
+	        // 결과값으로 받은 위치를 마커로 표시합니다
+	        var marker = new kakao.maps.Marker({
+	            map: map,
+	            position: coords
+	        });
+
+	        // 인포윈도우로 장소에 대한 설명을 표시합니다
+	        var infowindow = new kakao.maps.InfoWindow({
+	            content: '<div style="width:150px; text-align:center; padding:6px 0;">[[${upload.subject}]]</div>'
+	        });
+	        infowindow.open(map, marker);
+
+	        // 지도의 중심을 결과값으로 받은 위치로 이동시킵니다
+	        map.setCenter(coords);
+	    } 
+	});    
 	</script>
 </body>
 </html>
