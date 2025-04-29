@@ -42,6 +42,10 @@ public class Upload {
     
     private String location; // 위치 정보
     
+    private Double latitude;   // 위도
+    
+    private Double longitude;  // 경도
+    
     private String imagePath; //대표 이미지
 
     private String createDate; //날짜, 시간

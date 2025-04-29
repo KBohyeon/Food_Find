@@ -28,6 +28,7 @@ import com.example.foodfight.comments.CommentsForm;
 import com.example.foodfight.comments.CommentsService;
 import com.example.foodfight.user.SiteUser;
 import com.example.foodfight.user.UserService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RequestMapping("/upload")// 프리픽스
 @RequiredArgsConstructor
@@ -39,30 +40,27 @@ public class UploadController {
     private final UserService userService;
 	//컨트롤러 -> 서비스 -> 리포지터리
 	@GetMapping("/list") //프리픽스로 인해 /upload + /list로 됨
-	public String list(Model model) {
-		List<Upload> uploadList = this.uploadService.getList();
-	    List<Upload> hansikList = new ArrayList<>();
-	    List<Upload> jungsikList = new ArrayList<>();
-	    List<Upload> ilsikList = new ArrayList<>();
-	    List<Upload> yangsikList = new ArrayList<>();
-	    for (Upload upload : uploadList) {
-	        if ("한식".equals(upload.getCategory())) {
-	            hansikList.add(upload);
-	        } else if ("중식".equals(upload.getCategory())) {
-	            jungsikList.add(upload);
-	        } else if ("일식".equals(upload.getCategory())) {
-	            ilsikList.add(upload);
-	        } else if ("양식".equals(upload.getCategory())) {
-	            yangsikList.add(upload);
-	        }
+	public String list(@RequestParam(value = "keyword", required = false) String keyword,Model model) {
+		List<Upload> uploadList;
+		
+	    if (keyword != null && !keyword.trim().isEmpty()) {
+	        uploadList = this.uploadService.searchUploads(keyword); // 키워드 있으면 검색 결과
+	    } else {
+	        uploadList = this.uploadService.getList(); // 키워드 없으면 전체 카테고리별 평점 높은순 정렬
+	        List<Upload> hansikList = this.uploadService.getCategoryListOrderByRating("한식");
+	        List<Upload> jungsikList = this.uploadService.getCategoryListOrderByRating("중식");
+	        List<Upload> ilsikList = this.uploadService.getCategoryListOrderByRating("일식");
+	        List<Upload> yangsikList = this.uploadService.getCategoryListOrderByRating("양식");
+
+	        model.addAttribute("hansikList", hansikList);
+	        model.addAttribute("jungsikList", jungsikList);
+	        model.addAttribute("ilsikList", ilsikList);
+	        model.addAttribute("yangsikList", yangsikList);
 	    }
 	    
-	    // 모델에 담기
-	    model.addAttribute("hansikList", hansikList);
-	    model.addAttribute("jungsikList", jungsikList);
-	    model.addAttribute("ilsikList", ilsikList);
-	    model.addAttribute("yangsikList", yangsikList);
-		model.addAttribute("uploadList", uploadList);//기본 
+
+		model.addAttribute("uploadList", uploadList);//기본 전체 리스트
+		model.addAttribute("keyword", keyword);
 		return "index";
 	}
 	
@@ -94,12 +92,14 @@ public class UploadController {
                          @RequestParam(value = "location", required = false) String location,
                          @RequestParam(value = "mainImage", required = false) MultipartFile mainImage,
                          @RequestParam(value = "additionalImages", required = false) List<MultipartFile> additionalImages,
+                         @RequestParam(value = "latitude", required = false) Double latitude,
+                         @RequestParam(value = "longitude", required = false) Double longitude,
                          Principal principal) {
         
         SiteUser siteUser = userService.getUser(principal.getName());
         
         uploadService.create(subject, content, category, location, menu1, menu1Price, menu2, menu2Price, menu3, menu3Price, 
-        					 openTime, closeTime, dayOff, phone, tag1, tag2, mainImage, additionalImages, siteUser);
+        					 openTime, closeTime, dayOff, phone, tag1, tag2, mainImage, additionalImages, siteUser, latitude, longitude);
         
         return "redirect:/upload/list";
     }

@@ -61,7 +61,7 @@ public class UploadService {
     public Upload create(String subject, String content, String category, String location, String menu1, String menu1Price, 
     					 String menu2, String menu2Price, String menu3, String menu3Price, String openTime, String closeTime,
     					 String dayOff, String phone, String tag1, String tag2,
-                        MultipartFile mainImage, List<MultipartFile> additionalImages, SiteUser author) {
+                        MultipartFile mainImage, List<MultipartFile> additionalImages, SiteUser author, Double latitude, Double longitude) {
         try {
             Upload upload = new Upload();
             upload.setSubject(subject);
@@ -82,6 +82,9 @@ public class UploadService {
             upload.setPhone(phone);
             upload.setTag1(tag1);
             upload.setTag2(tag2);
+            upload.setLatitude(latitude);
+            upload.setLongitude(longitude);
+            
             
             // 대표 이미지 처리
             if (mainImage != null && !mainImage.isEmpty()) {
@@ -175,6 +178,14 @@ public class UploadService {
             System.out.println(upload.getCategory());  // 로그로 카테고리 출력 확인
         });
         return uploads;
+    }
+    
+    public List<Upload> getCategoryListOrderByRating(String category) {
+        return this.uploadRepository.findByCategoryOrderByRatingDesc(category);
+    }
+    
+    public List<Upload> searchUploads(String keyword) { //검색
+        return uploadRepository.searchByKeyword(keyword);
     }
     
 	

@@ -60,7 +60,7 @@
 
 .login-btn, .signup-btn {
     padding: 8px 16px;
-    border-radius: 4px;
+    border-radius: 10px;
     font-weight: 500;
     transition: all 0.3s;
 }
@@ -76,6 +76,7 @@
 }
 
 .signup-btn {
+	margin-right: 45px;
     color: white;
     background-color: var(--primary-color);
 }

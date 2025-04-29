@@ -15,11 +15,11 @@
     <header class="header">
         <div class="header-container">
             <div class="logo">
-                <h1>푸드파인더</h1>
+                <a th:href="@{/}"><h1>푸드파인더</h1></a>
             </div>
             <nav class="main-nav">
                 <ul>
-                    <li><a href="#" class="active">홈</a></li>
+                    <li><a th:href="@{/}" class="active">홈</a></li>
                     <li><a href="#">인기 맛집</a></li>
                     <li><a th:href="@{/upload/create}">신규 등록</a></li>
                     <li><a href="#">이벤트</a></li>
@@ -50,15 +50,17 @@
         <!-- 검색 섹션 -->
         <section class="search-section">
             <div class="container">
-<!--                <h2 class="section-title">오늘은 어떤 맛집을 찾으시나요?</h2>-->
-					<h2 class="section-title">디자인 안배워봄 훈수 환영</h2>
-					<h2 class="section-title">검색기능 지금 만드는 중</h2>
-                <div class="search-container">
-                    <input type="text" placeholder="지역, 음식, 가게 이름으로 검색" class="search-input">
-                    <button class="search-btn">
-                        <i class="fas fa-search"></i>
-                    </button>
-                </div>
+					<h2 class="section-title">오늘은 어떤 맛집을 찾으시나요?</h2>
+					<!--<h2 class="section-title">디자인 안배워봄 훈수 환영</h2>
+					<h2 class="section-title">검색기능 지금 만드는 중</h2>-->
+					<form th:action="@{/upload/list}" method="get">
+		                <div class="search-container">
+		                    <input type="text" name="keyword" th:value="${keyword}" placeholder="지역, 음식, 가게 이름으로 검색" class="search-input">
+		                    <button  type="submit" class="search-btn">
+		                        <i class="fas fa-search"></i>
+		                    </button>
+		                </div>
+					</form>
             </div>
         </section>
 
@@ -78,15 +80,18 @@
             </div>
         </section>-->
 
-        <!-- 추천 맛집 섹션 -->
-        <section class="recommended-section">
+        <!-- 검색 섹션 검색 했을때만 보임-->
+        <section class="recommended-section"  th:if="${keyword != null and !#strings.isEmpty(keyword)}">
             <div class="container">
                 <div class="section-header">
-                    <h3 class="section-subtitle">추천 맛집</h3>
+                    <h3 class="section-subtitle" th:text="'검색어: ' + ${keyword} + ' '+ ${#lists.size(uploadList)} + '건'"></h3>
                     <a href="#" class="view-all">전체보기 <i class="fas fa-chevron-right"></i></a>
                 </div>
                 <div class="scroll-container">
-                    <div class="restaurant-card" th:each="upload : ${uploadList}"> <!-- uploadList만큼 생성 -->
+					<div th:if="${#lists.isEmpty(uploadList)}" class="no-result-message">
+					    <p>검색 결과가 없습니다.</p>
+					</div>
+                    <div class="restaurant-card" th:each="upload : ${uploadList}" th:data-lat="${upload.latitude}" th:data-lng="${upload.longitude}"> <!-- uploadList만큼 생성 -->
                         <div class="card-image">
                             <a th:href="@{|/upload/detail/${upload.id}|}"><img th:src="@{'/uploads' + ${upload.imagePath}}" alt="한식당"></a> <!--되긴하는데 이렇게 해도 될지 모르겠음-->
                             <span class="category-tag" th:text="${upload.category}">한식</span>
@@ -98,6 +103,7 @@
                                 <span class="stars" th:text="${upload.rating != null ? upload.rating : '0.0'}">⭐ 4.5</span>
                                 <span class="review-count" th:if="${#lists.size(upload.commentsList) > 0}" 
 								th:text="${#lists.size(upload.commentsList)}">(120)</span>
+								<span class="distance-info">거리 계산 중...></span>
                             </div>
                             <p class="location"><i class="fas fa-map-marker-alt" 
 								th:text="${upload.location != nill ? upload.location : '위치 정보 없음'}"></i></p><!--위치 정보-->
@@ -112,7 +118,7 @@
         </section>
 		
 		<!-- 한식 섹션 -->
-		<section class="recommended-section">
+		<section class="recommended-section" th:if="${keyword == null or #strings.isEmpty(keyword)}">
 		    <div class="container">
 		        <div class="section-header">
 		            <h3 class="section-subtitle">한식</h3>
@@ -135,8 +141,8 @@
 		                    <p class="location"><i class="fas fa-map-marker-alt" 
 								th:text="${upload.location != nill ? upload.location : '위치 정보 없음'}"></i></p><!--위치 정보-->
 		                    <div class="tags">
-		                        <span class="tag">#태그1</span>
-		                        <span class="tag">#태그2</span>
+		                        <span class="tag" th:text="${'#' + upload.tag1}">#태그1</span>
+		                        <span class="tag" th:text="${'#' + upload.tag2}">#태그2</span>
 		                    </div>
 		                </div>
 		            </div>
@@ -145,7 +151,7 @@
 		</section>
 		
 		<!-- 중식 섹션 -->
-		<section class="recommended-section">
+		<section class="recommended-section" th:if="${keyword == null or #strings.isEmpty(keyword)}">
 		    <div class="container">
 		        <div class="section-header">
 		            <h3 class="section-subtitle">중식</h3>
@@ -168,8 +174,8 @@
 		                    <p class="location"><i class="fas fa-map-marker-alt" 
 								th:text="${upload.location != nill ? upload.location : '위치 정보 없음'}"></i></p><!--위치 정보-->
 		                    <div class="tags">
-		                        <span class="tag">#태그1</span>
-		                        <span class="tag">#태그2</span>
+		                        <span class="tag" th:text="${'#' + upload.tag1}">#태그1</span>
+		                        <span class="tag" th:text="${'#' + upload.tag2}">#태그2</span>
 		                    </div>
 		                </div>
 		            </div>
@@ -178,7 +184,7 @@
 		</section>
 		
 		<!-- 일식 섹션 -->
-		<section class="recommended-section">
+		<section class="recommended-section" th:if="${keyword == null or #strings.isEmpty(keyword)}">
 		    <div class="container">
 		        <div class="section-header">
 		            <h3 class="section-subtitle">일식</h3>
@@ -201,8 +207,8 @@
 		                    <p class="location"><i class="fas fa-map-marker-alt" 
 								th:text="${upload.location != nill ? upload.location : '위치 정보 없음'}"></i></p><!--위치 정보-->
 		                    <div class="tags">
-		                        <span class="tag">#태그1</span>
-		                        <span class="tag">#태그2</span>
+		                        <span class="tag" th:text="${'#' + upload.tag1}">#태그1</span>
+		                        <span class="tag" th:text="${'#' + upload.tag2}">#태그2</span>
 		                    </div>
 		                </div>
 		            </div>
@@ -211,7 +217,7 @@
 		</section>
 		
 		<!-- 양식 섹션 -->
-		<section class="recommended-section">
+		<section class="recommended-section" th:if="${keyword == null or #strings.isEmpty(keyword)}">
 		    <div class="container">
 		        <div class="section-header">
 		            <h3 class="section-subtitle">양식</h3>
@@ -234,8 +240,8 @@
 		                    <p class="location"><i class="fas fa-map-marker-alt" 
 								th:text="${upload.location != nill ? upload.location : '위치 정보 없음'}"></i></p><!--위치 정보-->
 		                    <div class="tags">
-		                        <span class="tag">#태그1</span>
-		                        <span class="tag">#태그2</span>
+		                        <span class="tag" th:text="${'#' + upload.tag1}">#태그1</span>
+		                        <span class="tag" th:text="${'#' + upload.tag2}">#태그2</span>
 		                    </div>
 		                </div>
 		            </div>
@@ -244,7 +250,7 @@
 		</section>
 		
 		<!-- 카페 섹션 -->
-		<section class="recommended-section">
+		<section class="recommended-section" th:if="${keyword == null or #strings.isEmpty(keyword)}">
 		    <div class="container">
 		        <div class="section-header">
 		            <h3 class="section-subtitle">카페</h3>
@@ -267,8 +273,8 @@
 		                    <p class="location"><i class="fas fa-map-marker-alt" 
 								th:text="${upload.location != nill ? upload.location : '위치 정보 없음'}"></i></p><!--위치 정보-->
 		                    <div class="tags">
-		                        <span class="tag">#태그1</span>
-		                        <span class="tag">#태그2</span>
+		                        <span class="tag" th:text="${'#' + upload.tag1}">#태그1</span>
+		                        <span class="tag" th:text="${'#' + upload.tag2}">#태그2</span>
 		                    </div>
 		                </div>
 		            </div>
@@ -277,7 +283,7 @@
 		</section>
 		
 		<!-- 디저트 섹션 -->
-		<section class="recommended-section">
+		<section class="recommended-section" th:if="${keyword == null or #strings.isEmpty(keyword)}">
 		    <div class="container">
 		        <div class="section-header">
 		            <h3 class="section-subtitle">디저트</h3>
@@ -300,8 +306,8 @@
 		                    <p class="location"><i class="fas fa-map-marker-alt" 
 								th:text="${upload.location != nill ? upload.location : '위치 정보 없음'}"></i></p><!--위치 정보-->
 		                    <div class="tags">
-		                        <span class="tag">#태그1</span>
-		                        <span class="tag">#태그2</span>
+		                        <span class="tag" th:text="${'#' + upload.tag1}">#태그1</span>
+		                        <span class="tag" th:text="${'#' + upload.tag2}">#태그2</span>
 		                    </div>
 		                </div>
 		            </div>
@@ -412,5 +418,51 @@
     </footer>
 
     <script src="/main.js"></script>
+	
+	<script>
+	    window.addEventListener("load", function () {
+	        if (navigator.geolocation) {
+	            navigator.geolocation.getCurrentPosition(showDistances, handleError);
+	        }
+
+	        function showDistances(position) {
+	            const userLat = position.coords.latitude;
+	            const userLng = position.coords.longitude;
+
+	            const cards = document.querySelectorAll(".restaurant-card");
+
+	            cards.forEach(card => {
+	                const lat = parseFloat(card.dataset.lat);
+	                const lng = parseFloat(card.dataset.lng);
+	                const distanceKm = calculateDistance(userLat, userLng, lat, lng);
+
+	                const distanceElement = card.querySelector(".distance-info");
+	                if (distanceElement) {
+	                    distanceElement.innerText = `거리: ${distanceKm.toFixed(2)} km`;
+	                }
+	            });
+	        }
+
+	        function handleError(error) {
+	            console.error("위치 정보 가져오기 실패", error);
+	        }
+
+	        function calculateDistance(lat1, lon1, lat2, lon2) {
+	            const R = 6371;
+	            const dLat = deg2rad(lat2 - lat1);
+	            const dLon = deg2rad(lon2 - lon1);
+	            const a =
+	                Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+	                Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
+	                Math.sin(dLon / 2) * Math.sin(dLon / 2);
+	            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+	            return R * c;
+	        }
+
+	        function deg2rad(deg) {
+	            return deg * (Math.PI / 180);
+	        }
+	    });
+	</script>
 </body>
 </html>
