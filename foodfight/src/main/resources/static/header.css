@@ -97,6 +97,7 @@
     position: absolute;
     top: 70px; /* 헤더 아래로 살짝 띄워 */
     right: 10px;
+	margin-right: 30px;
     background-color: #333;
     border-radius: 8px;
     width: 180px;

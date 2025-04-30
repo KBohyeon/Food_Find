@@ -54,7 +54,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (searchTerm) {
                 // 실제 구현에서는 검색어를 서버로 전송하거나 클라이언트 측에서 필터링하는 코드를 추가합니다
                 console.log(`검색어: ${searchTerm}`);
-                alert(`"${searchTerm}" 검색 결과를 표시합니다.`);
+/*                alert(`"${searchTerm}" 검색 결과를 표시합니다.`);*/
             }
         });
         

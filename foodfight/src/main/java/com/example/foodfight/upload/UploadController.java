@@ -1,9 +1,11 @@
 package com.example.foodfight.upload;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -39,30 +41,131 @@ public class UploadController {
 	private final CommentsService commentsService;
     private final UserService userService;
 	//컨트롤러 -> 서비스 -> 리포지터리
-	@GetMapping("/list") //프리픽스로 인해 /upload + /list로 됨
-	public String list(@RequestParam(value = "keyword", required = false) String keyword,Model model) {
-		List<Upload> uploadList;
-		
-	    if (keyword != null && !keyword.trim().isEmpty()) {
-	        uploadList = this.uploadService.searchUploads(keyword); // 키워드 있으면 검색 결과
-	    } else {
-	        uploadList = this.uploadService.getList(); // 키워드 없으면 전체 카테고리별 평점 높은순 정렬
-	        List<Upload> hansikList = this.uploadService.getCategoryListOrderByRating("한식");
-	        List<Upload> jungsikList = this.uploadService.getCategoryListOrderByRating("중식");
-	        List<Upload> ilsikList = this.uploadService.getCategoryListOrderByRating("일식");
-	        List<Upload> yangsikList = this.uploadService.getCategoryListOrderByRating("양식");
+    @GetMapping("/list")
+    public String list(@RequestParam(value = "keyword", required = false) String keyword,
+                       @RequestParam(value = "latitude", required = false) Double latitude,
+                       @RequestParam(value = "longitude", required = false) Double longitude,
+                       @RequestParam(value = "sort", required = false) String sort,
+                       Model model) {
 
-	        model.addAttribute("hansikList", hansikList);
-	        model.addAttribute("jungsikList", jungsikList);
-	        model.addAttribute("ilsikList", ilsikList);
-	        model.addAttribute("yangsikList", yangsikList);
-	    }
-	    
+        // 1. 기본 데이터 준비
+        List<Upload> rawUploadList;
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            rawUploadList = this.uploadService.searchUploads(keyword);
+        } else {
+            rawUploadList = this.uploadService.getList();
+        }
 
-		model.addAttribute("uploadList", uploadList);//기본 전체 리스트
-		model.addAttribute("keyword", keyword);
-		return "index";
-	}
+        // 2. 거리 정보 추가 (모든 리스트에 통일하여 적용)
+        List<Upload> processedList = processDistanceInformation(rawUploadList, latitude, longitude, sort);
+        model.addAttribute("uploadList", processedList);
+
+        // 3. 키워드가 없을 때만 카테고리별 목록 준비
+        if (keyword == null || keyword.trim().isEmpty()) {
+            // 각 카테고리별 리스트에도 동일한 거리 처리 적용
+            List<Upload> hansikList = processDistanceInformation(
+                this.uploadService.getCategoryListOrderByRating("한식"), 
+                latitude, longitude, null); // 카테고리별 목록은 별도 정렬 안함
+            
+            List<Upload> jungsikList = processDistanceInformation(
+                this.uploadService.getCategoryListOrderByRating("중식"), 
+                latitude, longitude, null);
+            
+            List<Upload> ilsikList = processDistanceInformation(
+                this.uploadService.getCategoryListOrderByRating("일식"), 
+                latitude, longitude, null);
+                
+            List<Upload> yangsikList = processDistanceInformation(
+                this.uploadService.getCategoryListOrderByRating("양식"), 
+                latitude, longitude, null);
+                
+            List<Upload> cafeList = processDistanceInformation(
+                this.uploadService.getCategoryListOrderByRating("카페"), 
+                latitude, longitude, null);
+                
+            List<Upload> dessertList = processDistanceInformation(
+                this.uploadService.getCategoryListOrderByRating("디저트"), 
+                latitude, longitude, null);
+
+            model.addAttribute("hansikList", hansikList);
+            model.addAttribute("jungsikList", jungsikList);
+            model.addAttribute("ilsikList", ilsikList);
+            model.addAttribute("yangsikList", yangsikList);
+            model.addAttribute("cafeList", cafeList);
+            model.addAttribute("dessertList", dessertList);
+        }
+
+        model.addAttribute("keyword", keyword);
+        return "index";
+    }
+
+    /**
+     * 거리 정보를 처리하고 Upload 객체에 거리 정보를 직접 추가하는 메서드
+     */
+    private List<Upload> processDistanceInformation(List<Upload> uploadList, 
+                                                  Double latitude, 
+                                                  Double longitude, 
+                                                  String sort) {
+        if (latitude == null || longitude == null) {
+            return uploadList; // 위치 정보가 없으면 원본 그대로 반환
+        }
+
+        // 각 Upload 객체에 거리 정보 설정
+        for (Upload upload : uploadList) {
+            if (upload.getLatitude() != null && upload.getLongitude() != null) {
+                double distance = calculateDistance(
+                    latitude, longitude, 
+                    upload.getLatitude(), upload.getLongitude());
+                upload.setDistance(distance); // Upload 클래스에 distance 필드 추가 필요
+            }
+        }
+
+        // 정렬 옵션이 있고 "distance"인 경우 거리순으로 정렬
+        if (sort != null && sort.equals("distance")) {
+            uploadList.sort(Comparator.comparing(Upload::getDistance, 
+                Comparator.nullsLast(Comparator.naturalOrder())));
+        }
+
+        return uploadList;
+    }
+    
+    private double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
+        final int R = 6371; // 지구 반지름 (km)
+        double latDistance = Math.toRadians(lat2 - lat1);
+        double lonDistance = Math.toRadians(lon2 - lon1);
+
+        double a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2)
+                + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2))
+                * Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2);
+
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        return R * c;
+    }
+
+	/*
+	 * @GetMapping("/list") //프리픽스로 인해 /upload + /list로 됨 public String
+	 * list(@RequestParam(value = "keyword", required = false) String keyword, Model
+	 * model) { List<Upload> uploadList;
+	 * 
+	 * if (keyword != null && !keyword.trim().isEmpty()) { uploadList =
+	 * this.uploadService.searchUploads(keyword); // 키워드 있으면 검색 결과 } else {
+	 * uploadList = this.uploadService.getList(); // 키워드 없으면 전체 카테고리별 평점 높은순 정렬
+	 * List<Upload> hansikList =
+	 * this.uploadService.getCategoryListOrderByRating("한식"); List<Upload>
+	 * jungsikList = this.uploadService.getCategoryListOrderByRating("중식");
+	 * List<Upload> ilsikList =
+	 * this.uploadService.getCategoryListOrderByRating("일식"); List<Upload>
+	 * yangsikList = this.uploadService.getCategoryListOrderByRating("양식");
+	 * 
+	 * model.addAttribute("hansikList", hansikList);
+	 * model.addAttribute("jungsikList", jungsikList);
+	 * model.addAttribute("ilsikList", ilsikList); model.addAttribute("yangsikList",
+	 * yangsikList); }
+	 * 
+	 * 
+	 * model.addAttribute("uploadList", uploadList);//기본 전체 리스트
+	 * model.addAttribute("keyword", keyword); return "index"; }
+	 */
 	
     // 식당 등록 폼 페이지
     @GetMapping("/create")

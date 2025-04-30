@@ -14,7 +14,9 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany; 
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Transient;
+
 import java.util.Set;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
@@ -28,6 +30,19 @@ import lombok.Setter;
 @Setter
 @Entity
 public class Upload {
+	
+    @Transient  // DB에 저장하지 않음
+    private Double distance;  // 사용자 위치로부터의 거리
+    
+    // getter, setter 추가
+    public Double getDistance() {
+        return distance;
+    }
+    
+    public void setDistance(Double distance) {
+        this.distance = distance;
+    }
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
