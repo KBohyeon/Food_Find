@@ -1,7 +1,6 @@
 # 🔍 Food_Find
 
-**TradeUP**은 사용자 간의 중고 물품 거래를 지원하는 **웹 기반 거래 플랫폼**입니다.  
-간편한 등록, 검색, 거래 기능을 통해 누구나 쉽게 상품을 사고팔 수 있습니다.
+**Food_Find**은 내 주변 식당에서 빠르게 선택할때 사용하는 **웹 기반 사이트**입니다.  
 
 ## 🖥️ 프로젝트 개요
 
@@ -29,32 +28,40 @@
 
 ## 🌄 화면 미리보기
 
-TradeUP의 주요 화면들을 아래에서 확인하실 수 있습니다.
+Food_Find의 주요 화면들을 아래에서 확인하실 수 있습니다.
 
 <table>
   <tr>
     <td align="center"><b>🏠 메인 페이지</b></td>
-    <td align="center"><b>🔍 장바구니</b></td>
+    <td align="center"><b>📱 모바일 페이지</b></td>
   </tr>
   <tr>
-    <td><img src="./images/메인화면.png" width="100%"></td>
-    <td><img src="./images/장바구니.png" width="100%"></td>
+    <td><img src="./images/메인페이지.png" width="100%"></td>
+    <td><img src="./images/메인페이지 모바일.png" width="100%"></td>
   </tr>
   <tr>
-    <td align="center"><b>📄 관리자계정페이지</b></td>
-    <td align="center"><b>➕ 회원가입</b></td>
+    <td align="center"><b>📄 상세페이지1</b></td>
+    <td align="center"><b>📄 상세페이지 지도</b></td>
   </tr>
   <tr>
-    <td><img src="./images/관리자계정페이지.png" width="100%"></td>
-    <td><img src="./images/회원가입.png" width="100%"></td>
+    <td><img src="./images/상세페이지1.png" width="100%"></td>
+    <td><img src="./images/상세페이지 지도.png" width="100%"></td>
   </tr>
   <tr>
-    <td align="center"><b>🔐 DB</b></td>
-    <td align="center"><b>🙋 유저게시판</b></td>
+    <td align="center"><b>📄 상세페이지 식당 정보</b></td>
+    <td align="center"><b>📄 상세페이지 리뷰</b></td>
   </tr>
   <tr>
-    <td><img src="./images/db.png" width="100%"></td>
-    <td><img src="./images/유저게시판.png" width="100%"></td>
+    <td><img src="./images/상세페이지 식당 정보.png" width="100%"></td>
+    <td><img src="./images/상세페이지 리뷰.png" width="100%"></td>
+  </tr>
+    <tr>
+    <td align="center"><b>🔍 검색페이지</b></td>
+    <td align="center"><b>💾 DB</b></td>
+  </tr>
+  <tr>
+    <td><img src="./images/검색페이지.png" width="100%"></td>
+    <td><img src="./images/데이터베이스.png" width="100%"></td>
   </tr>
 </table>
 
@@ -62,8 +69,7 @@ TradeUP의 주요 화면들을 아래에서 확인하실 수 있습니다.
 
 ## 📌 향후 개선 방향
 
-- 거래 후기 및 별점 기능 추가
-- 관리자 페이지 기능 고도화
-- 모바일 반응형 UI 적용
-- 실시간 채팅 기능 연동
+- 1.5km내 랜덤 식당 추천
+- 리뷰 등록시 영수증 리뷰 추가
+
 
