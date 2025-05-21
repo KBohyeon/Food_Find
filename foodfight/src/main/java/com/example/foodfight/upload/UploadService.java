@@ -61,7 +61,7 @@ public class UploadService {
     public Upload create(String subject, String content, String category, String location, String menu1, String menu1Price, 
     					 String menu2, String menu2Price, String menu3, String menu3Price, String openTime, String closeTime,
     					 String dayOff, String phone, String tag1, String tag2,
-                        MultipartFile mainImage, List<MultipartFile> additionalImages, SiteUser author, Double latitude, Double longitude) {
+                        MultipartFile mainImage, List<MultipartFile> additionalImages, SiteUser author, Double latitude, Double longitude, SiteUser owner) {
         try {
             Upload upload = new Upload();
             upload.setSubject(subject);
@@ -84,7 +84,7 @@ public class UploadService {
             upload.setTag2(tag2);
             upload.setLatitude(latitude);
             upload.setLongitude(longitude);
-            
+            upload.setOwner(owner);
             
             // 대표 이미지 처리
             if (mainImage != null && !mainImage.isEmpty()) {
@@ -189,7 +189,7 @@ public class UploadService {
     }
     
 	
-    //메인페이지 식당 정보 불러오기 메소드??
+    //메인페이지 식당 정보 불러오기 메소드
     public Upload getUpload(Long id) {  
         Optional<Upload> upload = this.uploadRepository.findById(id);
         if (upload.isPresent()) {
@@ -238,6 +238,11 @@ public class UploadService {
     // 식당 이미지 조회 메서드
     public List<UploadImage> getUploadImagesByUpload(Upload upload) {
         return uploadImageRepository.findByUpload(upload);
+    }
+    
+ // 사용자가 소유한 식당 목록 조회d
+    public List<Upload> getRestaurantsByOwner(SiteUser owner) {
+        return uploadRepository.findByOwner(owner);
     }
 	
 }
