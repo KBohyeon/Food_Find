@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>나의 예약 목록 | 푸드파인더</title>
+    <!-- Thymeleaf를 사용한 정적 리소스 참조 -->
+    <link rel="stylesheet" th:href="@{/main.css}">
+    <link rel="stylesheet" th:href="@{/header.css}">
+    <link rel="stylesheet" th:href="@{/footer.css}">
+    <link rel="stylesheet" th:href="@{/reservation.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <!-- 헤더 섹션 (기존과 동일) -->
+    <header class="header">
+        <!-- 헤더 내용 -->
+    </header>
+
+    <!-- 메인 콘텐츠 -->
+    <main class="reservations-main">
+        <div class="container">
+            <div class="reservations-container">
+                <div class="reservations-header">
+                    <h1>나의 예약 목록</h1>
+                </div>
+                
+                <!-- 알림 메시지 -->
+                <div th:if="${message}" class="alert-message" th:text="${message}"></div>
+                
+                <!-- 예약 필터 -->
+                <div class="reservations-filter">
+                    <button class="filter-btn active" data-filter="all">전체</button>
+                    <button class="filter-btn" data-filter="PENDING">대기중</button>
+                    <button class="filter-btn" data-filter="CONFIRMED">확정됨</button>
+                    <button class="filter-btn" data-filter="CANCELED">취소됨</button>
+                </div>
+                
+                <!-- 예약 목록 -->
+                <div class="reservations-list">
+                    <!-- 예약이 없는 경우 -->
+                    <div th:if="${#lists.isEmpty(reservations)}" class="no-reservations">
+                        <i class="far fa-calendar-times"></i>
+                        <p>예약 내역이 없습니다.</p>
+                    </div>
+                    
+                    <!-- 예약 항목 -->
+                    <div th:each="reservation : ${reservations}" th:class="'reservation-item ' + ${reservation.status}" th:data-status="${reservation.status}">
+                        <div class="reservation-restaurant">
+                            <img th:src="@{'/uploads' + ${reservation.restaurant.imagePath}}" alt="식당 이미지">
+                            <div class="restaurant-info">
+                                <h3 th:text="${reservation.restaurant.subject}">식당 이름</h3>
+                                <p><i class="fas fa-map-marker-alt"></i> <span th:text="${reservation.restaurant.location}">위치</span></p>
+                            </div>
+                        </div>
+                        
+                        <div class="reservation-details">
+                            <div class="detail-item">
+                                <span class="label">예약 날짜</span>
+                                <span class="value" th:text="${#temporals.format(reservation.reservationDate, 'yyyy년 MM월 dd일')}">날짜</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="label">예약 시간</span>
+                                <span class="value" th:text="${reservation.reservationTime}">시간</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="label">인원</span>
+                                <span class="value" th:text="${reservation.personCount} + '명'">인원</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="label">상태</span>
+                                <span th:class="'status-badge ' + ${reservation.status}" 
+                                      th:text="${reservation.status.displayName}">상태</span>
+                            </div>
+                        </div>
+                        
+                        <div class="reservation-actions">
+                            
+                            <!-- 취소 가능한 경우에만 버튼 표시d -->
+                            <form th:if="${reservation.status.name() == 'PENDING' || reservation.status.name() == 'CONFIRMED'}" 
+                                  th:action="@{|/reservation/cancel/${reservation.id}|}" method="post">
+                                <button type="submit" class="cancel-btn" onclick="return confirm('정말로 예약을 취소하시겠습니까?')">
+                                    예약 취소
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 푸터 섹션 (기존과 동일) -->
+    <footer class="footer">
+        <!-- 푸터 내용 -->
+    </footer>
+
+    <!-- JavaScript -->
+    <script th:src="@{/main.js}"></script>
+    <script>
+        // 예약 필터링 기능
+        document.addEventListener('DOMContentLoaded', function() {
+            const filterButtons = document.querySelectorAll('.filter-btn');
+            const reservationItems = document.querySelectorAll('.reservation-item');
+            
+            filterButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // 버튼 활성화 상태 변경
+                    filterButtons.forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    const filter = this.getAttribute('data-filter');
+                    
+                    // 예약 항목 필터링
+                    reservationItems.forEach(item => {
+                        if (filter === 'all' || item.getAttribute('data-status') === filter) {
+                            item.style.display = 'flex';
+                        } else {
+                            item.style.display = 'none';
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>내 식당 관리 | 푸드파인더</title>
+    <!-- Thymeleaf를 사용한 정적 리소스 참조 -->
+    <link rel="stylesheet" th:href="@{/main.css}">
+    <link rel="stylesheet" th:href="@{/header.css}">
+    <link rel="stylesheet" th:href="@{/footer.css}">
+    <link rel="stylesheet" th:href="@{/owner.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <!-- 헤더 섹션 -->
+    <header class="header">
+        <!-- 헤더 내용 -->
+    </header>
+
+    <!-- 메인 콘텐츠 -->
+    <main class="owner-main">
+        <div class="container">
+            <div class="owner-container">
+                <div class="owner-header">
+                    <h1>내 식당 관리</h1>
+                    <a th:href="@{/upload/create}" class="add-restaurant-btn">
+                        <i class="fas fa-plus"></i> 새 식당 등록
+                    </a>
+                </div>
+                
+                <!-- 알림 메시지 -->
+                <div th:if="${message}" class="alert-message" th:text="${message}"></div>
+                <div th:if="${param.error}" class="error-message">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <span th:if="${param.error[0] == 'unauthorized'}">접근 권한이 없습니다.</span>
+                </div>
+                
+                <!-- 식당 목록 -->
+                <div class="restaurant-list">
+                    <!-- 식당이 없는 경우 -->
+                    <div th:if="${#lists.isEmpty(restaurants)}" class="no-restaurants">
+                        <i class="far fa-frown"></i>
+                        <p>등록된 식당이 없습니다.</p>
+                        <p>새 식당을 등록해보세요!</p>
+                    </div>
+                    
+                    <!-- 식당 항목 -->
+                    <div th:each="restaurant : ${restaurants}" class="restaurant-item">
+                        <div class="restaurant-image">
+                            <img th:src="@{'/uploads' + ${restaurant.imagePath}}" alt="식당 이미지">
+                        </div>
+                        <div class="restaurant-info">
+                            <h3 th:text="${restaurant.subject}">식당 이름</h3>
+                            <p class="restaurant-location">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span th:text="${restaurant.location}">위치</span>
+                            </p>
+                            <p class="restaurant-rating">
+                                <i class="fas fa-star"></i>
+                                <span th:text="${restaurant.rating != null ? restaurant.rating : '0.0'}">평점</span>
+                                <span class="review-count">(리뷰 <span th:text="${#lists.size(restaurant.commentsList)}">0</span>개)</span>
+                            </p>
+                        </div>
+                        <div class="restaurant-actions">
+                            <a th:href="@{|/owner/reservation/restaurant/${restaurant.id}|}" class="view-reservations-btn">
+                                <i class="far fa-calendar-alt"></i> 예약 관리
+                            </a>
+                            <a th:href="@{|/upload/detail/${restaurant.id}|}" class="view-detail-btn">
+                                <i class="fas fa-external-link-alt"></i> 상세 보기
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 푸터 섹션 -->
+    <footer class="footer">
+        <!-- 푸터 내용 -->
+    </footer>
+
+    <!-- JavaScript -->
+    <script th:src="@{/main.js}"></script>
+</body>
+</html>

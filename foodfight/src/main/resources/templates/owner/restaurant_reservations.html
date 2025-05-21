@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${restaurant.subject} + ' 예약 관리 | 푸드파인더'">식당 예약 관리 | 푸드파인더</title>
+    <!-- Thymeleaf를 사용한 정적 리소스 참조 -->
+    <link rel="stylesheet" th:href="@{/main.css}">
+    <link rel="stylesheet" th:href="@{/header.css}">
+    <link rel="stylesheet" th:href="@{/footer.css}">
+    <link rel="stylesheet" th:href="@{/owner.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <!-- 헤더 섹션 -->
+    <header class="header">
+        <!-- 헤더 내용 -->
+    </header>
+
+    <!-- 메인 콘텐츠 -->
+    <main class="owner-main">
+        <div class="container">
+            <div class="owner-container">
+                <div class="owner-header">
+                    <h1 th:text="${restaurant.subject} + ' 예약 관리'">식당 예약 관리</h1>
+                    <a th:href="@{/owner/reservation/restaurants}" class="back-btn">
+                        <i class="fas fa-arrow-left"></i> 내 식당 목록으로 돌아가기
+                    </a>
+                </div>
+                
+                <!-- 알림 메시지 -->
+                <div th:if="${message}" class="alert-message" th:text="${message}"></div>
+                
+                <!-- 식당 정보 카드 -->
+                <div class="restaurant-info-card">
+                    <div class="restaurant-image">
+                        <img th:src="@{'/uploads' + ${restaurant.imagePath}}" alt="식당 이미지">
+                    </div>
+                    <div class="restaurant-details">
+                        <h2 th:text="${restaurant.subject}">식당 이름</h2>
+                        <p class="restaurant-address">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span th:text="${restaurant.location}">식당 주소</span>
+                        </p>
+                        <p class="restaurant-time" th:if="${restaurant.openTime != null && !restaurant.openTime.isEmpty()}">
+                            <i class="fas fa-clock"></i>
+                            <span th:text="${restaurant.openTime} + ' ~ ' + ${restaurant.closeTime}">영업시간</span>
+                        </p>
+                        <a th:href="@{|/upload/detail/${restaurant.id}|}" class="view-restaurant-btn">
+                            식당 상세 보기
+                        </a>
+                    </div>
+                </div>
+				
+				<!-- 여기에 예약 통계 표시(7.2) 추가 -->
+				<div class="reservation-stats">
+				    <div class="stat-item">
+				        <span class="stat-label">오늘 예약</span>
+				        <span class="stat-value" th:text="${todayCount}">0</span>
+				    </div>
+				    <div class="stat-item">
+				        <span class="stat-label">이번 주 예약</span>
+				        <span class="stat-value" th:text="${weekCount}">0</span>
+				    </div>
+				    <div class="stat-item">
+				        <span class="stat-label">이번 달 예약</span>
+				        <span class="stat-value" th:text="${monthCount}">0</span>
+				    </div>
+				    <div class="stat-item">
+				        <span class="stat-label">평균 인원</span>
+				        <span class="stat-value" th:text="${averagePersons}">0</span>
+				    </div>
+				</div>
+
+				<!-- 여기에 날짜별 예약 보기(7.1) 추가 -->
+				<div class="date-filter">
+				    <form th:action="@{|/owner/reservation/restaurant/${restaurant.id}|}" method="get">
+				        <div class="date-filter-inputs">
+				            <label for="filterDate">날짜별 보기:</label>
+				            <input type="date" id="filterDate" name="date" th:value="${filterDate}">
+				            <button type="submit" class="filter-date-btn">적용</button>
+				            <a th:href="@{|/owner/reservation/restaurant/${restaurant.id}|}" class="reset-btn">초기화</a>
+				        </div>
+				    </form>
+				</div>
+                
+                <!-- 예약 필터 -->
+                <div class="reservation-filter">
+                    <button class="filter-btn active" data-filter="all">전체 예약</button>
+                    <button class="filter-btn" data-filter="CONFIRMED">확정됨</button>
+                    <button class="filter-btn" data-filter="CANCELED">취소됨</button>
+                </div>
+                
+                <!-- 예약 목록 -->
+                <div class="reservation-list">
+                    <!-- 예약이 없는 경우 -->
+                    <div th:if="${#lists.isEmpty(reservations)}" class="no-reservations">
+                        <i class="far fa-calendar-times"></i>
+                        <p>예약 내역이 없습니다.</p>
+                    </div>
+                    
+                    <!-- 예약 항목 -->
+                    <div th:each="reservation : ${reservations}" th:class="'reservation-item ' + ${reservation.status}" th:data-status="${reservation.status}">
+                        <div class="reservation-customer">
+                            <div class="customer-info">
+                                <h3><i class="fas fa-user"></i> <span th:text="${reservation.user.username}">사용자명</span></h3>
+                                <p th:if="${reservation.request != null && !reservation.request.isEmpty()}" class="request-text">
+                                    <i class="fas fa-comment"></i> <span th:text="${reservation.request}">요청사항</span>
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <div class="reservation-details">
+                            <div class="detail-item">
+                                <span class="label">예약 번호</span>
+                                <span class="value" th:text="${reservation.id}">123</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="label">예약 날짜</span>
+                                <span class="value" th:text="${#temporals.format(reservation.reservationDate, 'yyyy년 MM월 dd일')}">날짜</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="label">예약 시간</span>
+                                <span class="value" th:text="${reservation.reservationTime}">시간</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="label">인원</span>
+                                <span class="value" th:text="${reservation.personCount} + '명'">인원</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="label">예약일</span>
+                                <span class="value" th:text="${reservation.createDate}">예약일</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="label">상태</span>
+                                <span th:class="'status-badge ' + ${reservation.status}" 
+                                      th:text="${reservation.status.displayName}">상태</span>
+                            </div>
+                        </div>
+                        
+                        <div class="reservation-actions">                        
+                            <!-- 예약 상태가 대기중(PENDING) 또는 확정됨(CONFIRMED)인 경우 취소 버튼 표시 -->
+                            <form th:if="${reservation.status.name() == 'PENDING' || reservation.status.name() == 'CONFIRMED'}" 
+                                  th:action="@{|/owner/reservation/update-status/${reservation.id}|}" method="post">
+                                <input type="hidden" name="status" value="CANCELED">
+                                <button type="submit" class="cancel-btn" onclick="return confirm('예약을 취소하시겠습니까?')">
+                                    <i class="fas fa-times"></i> 예약 취소
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 푸터 섹션 -->
+    <footer class="footer">
+        <!-- 푸터 내용 -->
+    </footer>
+
+    <!-- JavaScript -->
+    <script th:src="@{/main.js}"></script>
+    <script>
+        // 예약 필터링 기능
+        document.addEventListener('DOMContentLoaded', function() {
+            const filterButtons = document.querySelectorAll('.filter-btn');
+            const reservationItems = document.querySelectorAll('.reservation-item');
+            
+            filterButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // 버튼 활성화 상태 변경
+                    filterButtons.forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    const filter = this.getAttribute('data-filter');
+                    
+                    // 예약 항목 필터링
+                    reservationItems.forEach(item => {
+                        if (filter === 'all' || item.getAttribute('data-status') === filter) {
+                            item.style.display = 'flex';
+                        } else {
+                            item.style.display = 'none';
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+</html>
