@@ -105,6 +105,10 @@ public class Upload {
     @ManyToOne
 //    @JsonIgnoreProperties({"commentsList", "voter"}) // 순환 참조 방지
     private SiteUser author;
+    
+    // 식당 소유자(등록자)d 정보 추가
+    @ManyToOne
+    private SiteUser owner;
 
     
 }
