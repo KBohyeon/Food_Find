@@ -1,0 +1,483 @@
+/* 예약 페이지 스타일 */
+.reservation-main, .reservations-main, .reservation-detail-main {
+    padding: 40px 0;
+    background-color: var(--background-color);
+}
+
+.reservation-container, .reservations-container, .reservation-detail-container {
+    background-color: white;
+    border-radius: var(--border-radius);
+    padding: 30px;
+    box-shadow: var(--shadow);
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.reservation-header, .reservations-header, .reservation-detail-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.reservation-header h1, .reservations-header h1, .reservation-detail-header h1 {
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: var(--text-color);
+}
+
+.back-link {
+    display: flex;
+    align-items: center;
+    color: var(--primary-color);
+    font-weight: 500;
+    transition: color 0.3s;
+}
+
+.back-link i {
+    margin-right: 5px;
+}
+
+.back-link:hover {
+    color: var(--secondary-color);
+}
+
+/* 식당 정보 카드 */
+.restaurant-info-card {
+    display: flex;
+    gap: 20px;
+    padding: 20px;
+    background-color: var(--background-color);
+    border-radius: 8px;
+    margin-bottom: 30px;
+}
+
+.restaurant-image {
+    width: 120px;
+    height: 120px;
+    border-radius: 8px;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.restaurant-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.restaurant-details {
+    flex: 1;
+}
+
+.restaurant-details h2 {
+    font-size: 1.4rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: var(--text-color);
+}
+
+.restaurant-address, .restaurant-time {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+    font-size: 0.9rem;
+    color: var(--light-text);
+}
+
+.restaurant-address i, .restaurant-time i {
+    margin-right: 5px;
+    color: var(--primary-color);
+}
+
+.view-restaurant-btn {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 5px 10px;
+    background-color: var(--primary-color);
+    color: white;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    transition: background-color 0.3s;
+}
+
+.view-restaurant-btn:hover {
+    background-color: var(--secondary-color);
+}
+
+/* 예약 폼 */
+.reservation-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-group label {
+    font-weight: 500;
+    color: var(--text-color);
+}
+
+.form-group input, .form-group select, .form-group textarea {
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-size: 1rem;
+    font-family: inherit;
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.cancel-btn, .submit-btn {
+    padding: 10px 20px;
+    border-radius: 4px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.cancel-btn {
+    background-color: var(--background-color);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+}
+
+.cancel-btn:hover {
+    background-color: var(--border-color);
+}
+
+.submit-btn {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+}
+
+.submit-btn:hover {
+    background-color: var(--secondary-color);
+}
+
+/* 알림 메시지 */
+.alert-message {
+    padding: 15px;
+    margin-bottom: 20px;
+    background-color: #d4edda;
+    color: #155724;
+    border-radius: 4px;
+    font-weight: 500;
+}
+
+/* 예약 필터 */
+.reservations-filter {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    overflow-x: auto;
+    padding-bottom: 5px;
+}
+
+.filter-btn {
+    padding: 8px 15px;
+    border-radius: 20px;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    font-size: 0.9rem;
+    white-space: nowrap;
+    transition: all 0.3s;
+}
+
+.filter-btn:hover {
+    background-color: var(--border-color);
+}
+
+.filter-btn.active {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+/* 예약 목록 */
+.reservations-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.reservation-item {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    padding: 20px;
+    background-color: var(--background-color);
+    border-radius: 8px;
+    transition: transform 0.3s;
+}
+
+.reservation-item:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.reservation-restaurant {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex: 1;
+    min-width: 250px;
+}
+
+.reservation-restaurant img {
+    width: 80px;
+    height: 80px;
+    border-radius: 8px;
+    object-fit: cover;
+}
+
+.restaurant-info h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+.restaurant-info p {
+    font-size: 0.9rem;
+    color: var(--light-text);
+}
+
+.reservation-details {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 10px;
+    flex: 2;
+    min-width: 250px;
+}
+
+.detail-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.label {
+    font-size: 0.8rem;
+    color: var(--light-text);
+    margin-bottom: 2px;
+}
+
+.value {
+    font-weight: 500;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    text-align: center;
+}
+
+.status-badge.PENDING {
+    background-color: #ffd43b;
+    color: #664d03;
+}
+
+.status-badge.CONFIRMED {
+    background-color: #4caf50;
+    color: white;
+}
+
+.status-badge.CANCELED {
+    background-color: #f44336;
+    color: white;
+}
+
+.reservation-actions {
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
+    gap: 10px;
+    flex: 1;
+    min-width: 150px;
+}
+
+.detail-btn, .edit-btn {
+    display: inline-block;
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-align: center;
+    transition: background-color 0.3s;
+}
+
+.detail-btn {
+    background-color: var(--background-color);
+    border: 1px solid var(--border-color);
+    color: var(--text-color);
+}
+
+/* reservation.css 계속 */
+.detail-btn:hover {
+    background-color: var(--border-color);
+}
+
+.edit-btn {
+    background-color: #4caf50;
+    color: white;
+}
+
+.edit-btn:hover {
+    background-color: #45a049;
+}
+
+.cancel-btn {
+    padding: 8px 12px;
+    background-color: #f44336;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.cancel-btn:hover {
+    background-color: #d32f2f;
+}
+
+.no-reservations {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 0;
+    color: var(--light-text);
+}
+
+.no-reservations i {
+    font-size: 3rem;
+    margin-bottom: 15px;
+}
+
+.no-reservations p {
+    font-size: 1.1rem;
+}
+
+/* 예약 상세 페이지 스타일 */
+.reservation-status {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.reservation-status .status-badge {
+    padding: 8px 15px;
+    font-size: 1rem;
+}
+
+.reservation-info-card {
+    background-color: var(--background-color);
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 30px;
+}
+
+.reservation-info-card h3 {
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: var(--text-color);
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.info-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.info-item .label {
+    font-size: 0.9rem;
+    color: var(--light-text);
+    margin-bottom: 5px;
+}
+
+.info-item .value {
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+
+.request-box {
+    background-color: white;
+    border-radius: 4px;
+    padding: 15px;
+    margin-top: 15px;
+}
+
+.request-box h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: var(--text-color);
+}
+
+.request-box p {
+    font-size: 0.9rem;
+    line-height: 1.6;
+}
+
+/* 반응형 스타일 */
+@media (max-width: 768px) {
+    .reservation-header, .reservations-header, .reservation-detail-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    
+    .restaurant-info-card {
+        flex-direction: column;
+    }
+    
+    .restaurant-image {
+        width: 100%;
+        height: 150px;
+    }
+    
+    .reservation-item {
+        flex-direction: column;
+    }
+    
+    .reservation-actions {
+        justify-content: flex-start;
+    }
+    
+    .info-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .restaurant-info-card {
+        flex-direction: column;
+    }
+    
+    .restaurant-image {
+        width: 100%;
+        height: 150px;
+    }
+}
