@@ -38,7 +38,7 @@ Food_Find의 주요 화면들을 아래에서 확인하실 수 있습니다.
   </tr>
   <tr>
     <td><img src="./images/메인페이지.png" width="100%"></td>
-    <td><img src="./images/메인페이지 모바일.png" width="100%"></td>
+    <td><img src="./images/메인페이지 모바일.png" width="50%"></td>
   </tr>
   <tr>
     <td align="center"><b>📄 상세페이지1</b></td>
@@ -55,6 +55,22 @@ Food_Find의 주요 화면들을 아래에서 확인하실 수 있습니다.
   <tr>
     <td><img src="./images/상세페이지 식당 정보.png" width="100%"></td>
     <td><img src="./images/상세페이지 리뷰.png" width="100%"></td>
+  </tr>
+    <tr>
+    <td align="center"><b>📄 식당 예약</b></td>
+    <td align="center"><b>📄 나의 예약 목록</b></td>
+  </tr>
+  <tr>
+    <td><img src="./images/식당 예약.png" width="100%"></td>
+    <td><img src="./images/나의 예약 목록.png" width="100%"></td>
+  </tr>
+    <tr>
+    <td align="center"><b>📄 내 식당 관리</b></td>
+    <td align="center"><b>📄 식당 예약 관리</b></td>
+  </tr>
+  <tr>
+    <td><img src="./images/내 식당 관리.png" width="100%"></td>
+    <td><img src="./images/예약 관리.png" width="100%"></td>
   </tr>
     <tr>
     <td align="center"><b>🔍 검색페이지</b></td>
