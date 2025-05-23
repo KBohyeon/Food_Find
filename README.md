@@ -78,7 +78,7 @@ Food_Find의 주요 화면들을 아래에서 확인하실 수 있습니다.
   </tr>
   <tr>
     <td><img src="./images/검색페이지.png" width="100%"></td>
-    <td><img src="./images/데이터베이스.png" width="100%"></td>
+    <td><img src="./images/데이터베이스1.png" width="100%"></td>
   </tr>
 </table>
 
