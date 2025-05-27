@@ -152,6 +152,12 @@ Food_Find의 주요 화면들을 아래에서 확인하실 수 있습니다.
   <tr>
     <td><img src="./images/분산락 사용시.PNG" width="100%"></td>
   </tr>
+    <tr>
+    <td align="center"><b>Redis 분산락 모니터링</b></td>
+  </tr>
+  <tr>
+    <td><img src="./images/radis.png" width="100%"></td>
+  </tr>
 </table>
 
 ---
