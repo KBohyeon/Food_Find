@@ -124,7 +124,7 @@ Food_Find의 주요 화면들을 아래에서 확인하실 수 있습니다.
   
 <table>
   <tr>
-    <td align="center"><b>같은 날짜, 시간 동시 예약 발생</b></td>
+    <td align="center"><b>데이터 중복 문제 발생</b></td>
   </tr>
   <tr>
     <td><img src="./images/동시에 예약이 된 상태.png" width="100%"></td>
