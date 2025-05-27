@@ -26,7 +26,9 @@ public class ReservationApiController {
     private final UploadService uploadService;
     private final UserService userService;
     
-    // 예약 생성 API
+    /**
+     * 예약 생성 API - Redis 분산 잠금 적용으로 동시성 문제 해결
+     */
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/create/{restaurantId}")
     public ResponseEntity<?> createReservation(
@@ -44,24 +46,38 @@ public class ReservationApiController {
             // 식당 정보 가져오기
             Upload restaurant = uploadService.getUpload(restaurantId);
             
-            // 예약 생성
+            // Redis 분산 잠금이 적용된 예약 생성
             Reservation reservation = reservationService.createReservation(restaurant, user, date, time, personCount, request);
             
-            // 응답 데이터 생성
+            // 성공 응답 데이터 생성
             Map<String, Object> response = new HashMap<>();
             response.put("id", reservation.getId());
             response.put("status", "success");
             response.put("message", "예약이 완료되었습니다.");
             
             return ResponseEntity.ok(response);
+            
+        } catch (ReservationBusyException e) {
+            // Redis 잠금 획득 실패 시 (다른 사용자가 예약 중)
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body(Map.of("status", "busy", "message", e.getMessage()));
+                    
+        } catch (ReservationFullException e) {
+            // 해당 시간대가 이미 예약된 경우
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("status", "full", "message", e.getMessage()));
+                    
         } catch (Exception e) {
+            // 기타 예상치 못한 오류
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Map.of("status", "error", "message", "예약 처리 중 오류가 발생했습니다."));
         }
     }
     
-    // 내 예약 목록 조회 API
+    /**
+     * 내 예약 목록 조회 API
+     */
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/my")
     public ResponseEntity<?> getMyReservations() {
@@ -105,7 +121,8 @@ public class ReservationApiController {
         }
     }
     
-    // 예약 취소 API
+    
+     //예약 취소 API    
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/cancel/{id}")
     public ResponseEntity<?> cancelReservation(@PathVariable("id") Long id) {
@@ -114,7 +131,7 @@ public class ReservationApiController {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             SiteUser user = userService.getUserByUsername(authentication.getName());
             
-            // 예약 정보 가져오기d
+            // 예약 정보 가져오기
             Reservation reservation = reservationService.getReservation(id);
             
             // 본인 예약만 취소 가능
@@ -129,10 +146,10 @@ public class ReservationApiController {
                         .body(Map.of("status", "error", "message", "이미 취소된 예약입니다."));
             }
             
-            // 예약 취소
             reservationService.cancelReservation(reservation);
             
             return ResponseEntity.ok(Map.of("status", "success", "message", "예약이 취소되었습니다."));
+            
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -140,7 +157,10 @@ public class ReservationApiController {
         }
     }
     
-    // 식당별 예약 가능 시간 조회 API
+    /**
+     * 식당별 예약 가능 시간 조회 API
+     * Redis 잠금과는 별도로 실시간 조회
+     */
     @GetMapping("/available-times/{restaurantId}")
     public ResponseEntity<?> getAvailableTimes(
             @PathVariable("restaurantId") Long restaurantId,
@@ -157,7 +177,7 @@ public class ReservationApiController {
             LocalTime openTime = LocalTime.parse(restaurant.getOpenTime());
             LocalTime closeTime = LocalTime.parse(restaurant.getCloseTime());
             
-         // 30분 단위로 슬롯 생성
+            // 30분 단위로 슬롯 생성
             List<Map<String, Object>> availableSlots = new ArrayList<>();
             LocalTime currentSlot = openTime;
 
@@ -165,8 +185,7 @@ public class ReservationApiController {
                 // 현재 시간 슬롯을 final 변수에 복사
                 final LocalTime timeSlot = currentSlot;
                 
-                // 이미 예약된 시간인지 확인 (복사한 final 변수 사용)
-                // PENDING 상태는 더 이상 확인할 필요 없음 (모두 CONFIRMED로 생성됨)
+                // 이미 예약된 시간인지 확인 (확정된 예약만 체크)
                 boolean isBooked = existingReservations.stream()
                         .anyMatch(r -> r.getReservationTime().equals(timeSlot) && 
                                 r.getStatus() == ReservationStatus.CONFIRMED);
@@ -183,6 +202,7 @@ public class ReservationApiController {
             }
             
             return ResponseEntity.ok(availableSlots);
+            
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

@@ -31,7 +31,7 @@ public class Reservation {
     @Column(columnDefinition = "TEXT")
     private String request;
     
-    // 예약 상태 (PENDING, CONFIRMED, CANCELED)d
+    // 예약 상태 (PENDING, CONFIRMED, CANCELED)dd
     @Enumerated(EnumType.STRING)
     private ReservationStatus status;
     
